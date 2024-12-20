@@ -46,6 +46,22 @@ const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, han
                     )}
                 </div>
 
+                {/* Medicine Name */}
+                <div className="col-span-1">
+                    <input
+                        type="text"
+                        name="GenericName"
+                        value={formData.GenericName}
+                        onChange={handleChange}
+                        placeholder="Generic Name"
+                        className={`border p-2 w-full rounded-md ${errors.GenericName ? 'border-red-500' : ''}`}
+                        required
+                    />
+                    {errors.GenericName && (
+                        <p className="text-red-500 text-xs mt-1">{errors.GenericName}</p>
+                    )}
+                </div>
+
                 {/* Strength */}
                 <div className="col-span-1">
                     <input
@@ -169,6 +185,22 @@ const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, han
                     )}
                 </div>
 
+                {/* Route of Administration */}
+                <div className="col-span-1">
+                    <input
+                        type="text"
+                        name="TherapeuticClass"
+                        value={formData.TherapeuticClass}
+                        onChange={handleChange}
+                        placeholder="Therapeutic Class"
+                        className={`border p-2 w-full rounded-md ${errors.TherapeuticClass ? 'border-red-500' : ''}`}
+                        required
+                    />
+                    {errors.TherapeuticClass && (
+                        <p className="text-red-500 text-xs mt-1">{errors.TherapeuticClass}</p>
+                    )}
+                </div>
+
                 {/* Indications */}
                 <div className="col-span-1">
                     <textarea
@@ -251,15 +283,17 @@ const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, han
 
                 {/* Prescription Required */}
                 <div className="col-span-1">
-                    <input
-                        type="text"
+                    <select
                         name="prescriptionReq"
                         value={formData.prescriptionReq}
                         onChange={handleChange}
-                        placeholder="Prescription Required"
                         className={`border p-2 w-full rounded-md ${errors.prescriptionReq ? 'border-red-500' : ''}`}
                         required
-                    />
+                    >
+                        <option value="Select">Select</option>
+                        <option value="YES">YES</option>
+                        <option value="NO">NO</option>
+                    </select>
                     {errors.prescriptionReq && (
                         <p className="text-red-500 text-xs mt-1">{errors.prescriptionReq}</p>
                     )}
@@ -267,15 +301,17 @@ const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, han
 
                 {/* Approval Info */}
                 <div className="col-span-1">
-                    <input
-                        type="text"
+                    <select
                         name="approvalInfo"
                         value={formData.approvalInfo}
                         onChange={handleChange}
-                        placeholder="Approval Information"
                         className={`border p-2 w-full rounded-md ${errors.approvalInfo ? 'border-red-500' : ''}`}
                         required
-                    />
+                    >
+                        <option value="Select">Select</option>
+                        <option value="FDA">FDA</option>
+                        <option value="EMA">EMA</option>
+                    </select>
                     {errors.approvalInfo && (
                         <p className="text-red-500 text-xs mt-1">{errors.approvalInfo}</p>
                     )}
@@ -288,7 +324,7 @@ const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, han
                         name="barcodeSKU"
                         value={formData.barcodeSKU || ''}
                         onChange={handleChange}
-                        placeholder="Barcode SKU (Optional)"
+                        placeholder="Barcode SKU (Unique)"
                         className={`border p-2 w-full rounded-md ${errors.barcodeSKU ? 'border-red-500' : ''}`}
                         required
                     />
@@ -326,22 +362,6 @@ const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, han
                     />
                     {errors.interactions && (
                         <p className="text-red-500 text-xs mt-1">{errors.interactions}</p>
-                    )}
-                </div>
-
-                {/* Regulatory Approval */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="regulatoryApproval"
-                        value={formData.regulatoryApproval}
-                        onChange={handleChange}
-                        placeholder="Regulatory Approval"
-                        className={`border p-2 w-full rounded-md ${errors.regulatoryApproval ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.regulatoryApproval && (
-                        <p className="text-red-500 text-xs mt-1">{errors.regulatoryApproval}</p>
                     )}
                 </div>
 

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Medicine } from '../types/medicine';
 import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid';
+import { Button, Table } from 'antd';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deleteMedicine } from '../services/medicine';
-import ConfirmDeleteModal from '../components/buttons/ConfirmDeleteModal';
 import { toast } from 'react-toastify';
-import { Table, Button } from 'antd';
+import ConfirmDeleteModal from '../components/buttons/ConfirmDeleteModal';
+import { deleteMedicine } from '../services/medicine';
+import { Medicine } from '../types/medicine';
 
 interface MedicineTableProps {
     medicines: Medicine[];
@@ -13,9 +13,18 @@ interface MedicineTableProps {
     onDelete: (medicine: Medicine) => Promise<void>;
     onAddNew: () => void;
     setMedicines: React.Dispatch<React.SetStateAction<Medicine[]>>;
+    handlePageChange: (
+        pagination: any,  // This is the pagination configuration object
+        filters: any,  // This is for column filters
+        sorter: any,  // This is for sorting columns
+
+    ) => void;
+    currentPage: number;
+    totalRecords: number;
+    pagesize: number;
 }
 
-const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails, onAddNew, setMedicines }) => {
+const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails, onAddNew, setMedicines, handlePageChange ,currentPage,totalRecords,pagesize}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [medicineToDelete, setMedicineToDelete] = useState<Medicine | null>(null);
 
@@ -119,13 +128,15 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
                 columns={columns}
                 dataSource={medicines}
                 rowKey="id"
-                pagination={false}
+                onChange={handlePageChange}
+                pagination={{
+                    total: totalRecords,
+                    pageSize:pagesize,
+                    current: currentPage,
+                    showSizeChanger: true,
+                    pageSizeOptions: [ '20', '50'],
+                }}
             />
-
-            {/* Pagination Controls */}
-            <div className="flex justify-between items-center mt-4">
-                {/* Pagination could be added here if needed */}
-            </div>
 
             {/* Confirmation Modal */}
             <ConfirmDeleteModal
@@ -139,3 +150,4 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
 };
 
 export default MedicineTable;
+

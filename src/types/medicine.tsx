@@ -5,11 +5,17 @@ export type DrugCategory = 'Antibiotic' | 'Painkiller' | 'Vitamin' | 'Antifungal
 export type DosageForm = 'Tablet' | 'Capsule' | 'Liquid' | 'Ointment' | 'Injection' | 'Select';
 type Float = number;
 
+export type PrescriptionReq = "YES" | "NO" | "Select";
+
+export type ApprovalInfo = "FDA" | "EMA" | "Select"
+
+
 // Medicine interface reflecting the Prisma schema
 export interface Medicine {
     id: string;
     medicineName: string;
     brandName: string;
+    GenericName: string;
     drugCategory: DrugCategory;
     dosageForm: DosageForm;
     strength: string;
@@ -17,17 +23,17 @@ export interface Medicine {
     packSize: string;
     price: Float;
     routeOfAdministration: string;
+    TherapeuticClass: string;
     indications: string;
     sideEffects: string;
     contraindications: string;
     storageConditions: string;
     shelfLife: string;
-    prescriptionReq: string;
-    approvalInfo: string;
-    barcodeSKU?: string;
+    prescriptionReq: PrescriptionReq;
+    approvalInfo: ApprovalInfo;
+    barcodeSKU: string; // unique
     batchNumber: string;
     interactions: string;
-    regulatoryApproval: string;
     countryOfOrigin: string;
     ndc: string;
     distributor: string;
@@ -37,9 +43,10 @@ export interface Medicine {
 
 // Type for Medicine form input, used when creating or updating a medicine
 export interface MedicineFormInput {
-    [x: string]: any;
+   
     medicineName: string;
     brandName: string;
+    GenericName: string;
     drugCategory: DrugCategory;
     dosageForm: DosageForm;
     strength: string;
@@ -47,17 +54,17 @@ export interface MedicineFormInput {
     packSize: string;
     price: Float;
     routeOfAdministration: string;
+    TherapeuticClass: string;
     indications: string;
     sideEffects: string;
     contraindications: string;
     storageConditions: string;
     shelfLife: string;
-    prescriptionReq: string;
-    approvalInfo: string;
-    barcodeSKU?: string;
+    prescriptionReq: PrescriptionReq;
+    approvalInfo: ApprovalInfo;
+    barcodeSKU: string;
     batchNumber: string;
     interactions: string;
-    regulatoryApproval: string;
     countryOfOrigin: string;
     ndc: string;
     distributor: string;

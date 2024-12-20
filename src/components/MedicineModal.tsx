@@ -40,6 +40,10 @@ const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
                             <span className="font-semibold">Price</span>
                             <span>{medicine.price}</span>
                         </div>
+                        <div className="flex flex-col w-1/3">
+                            <span className="font-semibold">Medicine Name</span>
+                            <span>{medicine.GenericName}</span>
+                        </div>
                     </div>
 
                     {/* Row 2: Drug Category, Dosage Form, Strength */}
@@ -129,8 +133,8 @@ const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
                             <span>{medicine.interactions}</span>
                         </div>
                         <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Regulatory Approval</span>
-                            <span>{medicine.regulatoryApproval}</span>
+                            <span className="font-semibold">Therapeutic Class</span>
+                            <span>{medicine.TherapeuticClass}</span>
                         </div>
                         <div className="flex flex-col w-1/3">
                             <span className="font-semibold">Country of Origin</span>

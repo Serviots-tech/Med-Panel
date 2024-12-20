@@ -4,17 +4,27 @@ import { MedicineFormInput } from '../types/medicine';
 // Set base URL for API
 const API_URL = 'http://localhost:5000/api/medicines';
 
-// Get all medicines
-export const getMedicines = async () => {
+// Get all medicines with pagination
+export const getMedicines = async (query: any) => {
     try {
-        const response = await axios.get(`${API_URL}/get-all`);
-        return response.data;
+        // Pass the page and limit as query parameters to the backend API
+        const response = await axios.get(`${API_URL}/get-all`, {
+            params: {
+                page: query?.currentPage,
+                limit: query?.pageSize,
+            },
+        });
+        return {
+            data: response.data.data,
+            pagination: response.data.pagination,
+        };
     } catch (error) {
         // Log the error and return a message or empty array
         console.error("Error fetching medicines:", error);
         throw new Error("Unable to fetch medicines");
     }
 };
+
 
 // Get a single medicine by ID
 export const getMedicineById = async (id: string) => {

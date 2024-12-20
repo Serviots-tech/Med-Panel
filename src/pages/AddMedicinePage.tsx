@@ -17,6 +17,7 @@ const AddMedicinePage: React.FC = () => {
     const [formData, setFormData] = useState<MedicineFormInput>({
         medicineName: '',
         brandName: '',
+        GenericName: '',
         drugCategory: 'Select',
         dosageForm: 'Select',
         strength: '',
@@ -24,17 +25,17 @@ const AddMedicinePage: React.FC = () => {
         packSize: '',
         price: 0,
         routeOfAdministration: '',
+        TherapeuticClass: '',
         indications: '',
         sideEffects: '',
         contraindications: '',
         storageConditions: '',
         shelfLife: '',
-        prescriptionReq: '',
-        approvalInfo: '',
+        prescriptionReq: 'Select',
+        approvalInfo: 'Select',
         barcodeSKU: '',
         batchNumber: '',
         interactions: '',
-        regulatoryApproval: '',
         countryOfOrigin: '',
         ndc: '',
         distributor: '',
@@ -86,6 +87,11 @@ const AddMedicinePage: React.FC = () => {
             isValid = false;
         }
 
+        if (!formData.GenericName.trim()) {
+            newErrors.GenericName = 'Brand name is required';
+            isValid = false;
+        }
+
         if (!formData.strength.trim()) {
             newErrors.strength = 'Strength is required';
             isValid = false;
@@ -116,16 +122,6 @@ const AddMedicinePage: React.FC = () => {
             isValid = false;
         }
 
-        if (!formData.prescriptionReq.trim()) {
-            newErrors.prescriptionReq = 'Prescription requirement is required';
-            isValid = false;
-        }
-
-        if (!formData.approvalInfo.trim()) {
-            newErrors.approvalInfo = 'Approval information is required';
-            isValid = false;
-        }
-
         if (!formData.indications.trim()) {
             newErrors.indications = 'Indications are required';
             isValid = false;
@@ -153,11 +149,6 @@ const AddMedicinePage: React.FC = () => {
 
         if (!formData.interactions.trim()) {
             newErrors.interactions = 'Interactions are required';
-            isValid = false;
-        }
-
-        if (!formData.regulatoryApproval.trim()) {
-            newErrors.regulatoryApproval = 'Regulatory approval is required';
             isValid = false;
         }
 
@@ -195,6 +186,16 @@ const AddMedicinePage: React.FC = () => {
 
         if (formData.dosageForm === 'Select') {
             newErrors.dosageForm = 'Dosage form is required';
+            isValid = false;
+        }
+
+        if (formData.prescriptionReq === 'Select') {
+            newErrors.prescriptionReq = 'Prescription Requirement form is required';
+            isValid = false;
+        }
+
+        if (formData.approvalInfo === 'Select') {
+            newErrors.approvalInfo = 'Approval information is required';
             isValid = false;
         }
 
@@ -249,6 +250,7 @@ const AddMedicinePage: React.FC = () => {
             setFormData({
                 medicineName: '',
                 brandName: '',
+                GenericName: '',
                 drugCategory: 'Select',
                 dosageForm: 'Select',
                 strength: '',
@@ -256,17 +258,17 @@ const AddMedicinePage: React.FC = () => {
                 packSize: '',
                 price: 0,
                 routeOfAdministration: '',
+                TherapeuticClass: '',
                 indications: '',
                 sideEffects: '',
                 contraindications: '',
                 storageConditions: '',
                 shelfLife: '',
-                prescriptionReq: '',
-                approvalInfo: '',
+                prescriptionReq: 'Select',
+                approvalInfo: 'Select',
                 barcodeSKU: '',
                 batchNumber: '',
                 interactions: '',
-                regulatoryApproval: '',
                 countryOfOrigin: '',
                 ndc: '',
                 distributor: '',
