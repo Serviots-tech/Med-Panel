@@ -43,7 +43,7 @@ export interface Medicine {
 
 // Type for Medicine form input, used when creating or updating a medicine
 export interface MedicineFormInput {
-   
+    id?:string;
     medicineName: string;
     brandName: string;
     GenericName: string;

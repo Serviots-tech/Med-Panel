@@ -4,13 +4,13 @@ import { Medicine } from '../types/medicine';
 import MedicineTable from '../components/MedicineTable';
 import MedicineModal from '../components/MedicineModal';
 import { TablePaginationConfig } from 'antd';
-import { FilterValue, SorterResult } from 'antd/es/table/interface';
+// import { FilterValue, SorterResult } from 'antd/es/table/interface';
 
 const MedicineListPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
     const [medicines, setMedicines] = useState<Medicine[]>([]);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setpageSize] = useState(10);
@@ -72,8 +72,8 @@ const MedicineListPage: React.FC = () => {
 
     // Handle page change
     const handlePageChange = (pagination: TablePaginationConfig,
-        filters: Record<string, FilterValue | null>,
-        sorter: SorterResult<Medicine>[],
+        // filters: Record<string, FilterValue | null>,
+        // sorter: SorterResult<Medicine>[],
     ) => {
         setCurrentPage(pagination?.current as number)
         setTotalRecords(pagination?.total as number)

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import { MedicineFormInput } from '../types/medicine';
+import { configData } from '../helpers/config';
 
 // Set base URL for API
-const API_URL = 'http://localhost:5000/api/medicines';
+const API_URL = configData.baseURL;
 
 // Get all medicines with pagination
 export const getMedicines = async (query: any) => {
