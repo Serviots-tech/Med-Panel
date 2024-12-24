@@ -10,7 +10,7 @@ const API_URL = configData.baseURL;
 export const getMedicines = async (query: any) => {
     try {
         // Pass the page and limit as query parameters to the backend API
-        const response = await axios.get(`${API_URL}/get-all`, {
+        const response = await axios.get(`${API_URL}/medicines/get-all`, {
             params: {
                 page: query?.currentPage,
                 limit: query?.pageSize,
