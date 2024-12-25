@@ -1,6 +1,7 @@
-import { Route, Routes } from "react-router-dom"
-import MedicineListPage from "./pages/MedicineListPage"
-import AddMedicinePage from "./pages/AddMedicinePage"
+
+import { RouterProvider } from "react-router-dom"
+import { router } from "./router"
+import { ToastContainer } from "react-toastify"
 // import EditMedicinePage from "./pages/EditMedicinePage"
 
 function App() {
@@ -8,10 +9,8 @@ function App() {
   return (
     <>
       <>
-        <Routes>
-          <Route path="/" element={<MedicineListPage />} />
-          <Route path="/add-medicine/:id?" element={<AddMedicinePage />} />
-        </Routes>
+        <RouterProvider router={router} />
+        <ToastContainer />
       </>
     </>
   )

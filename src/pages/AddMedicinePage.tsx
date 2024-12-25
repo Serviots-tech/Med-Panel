@@ -8,8 +8,6 @@ import { ArrowLeftIcon } from '@heroicons/react/16/solid';
 
 const AddMedicinePage: React.FC = () => {
 
-    console.log("Edit")
-
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -52,12 +50,20 @@ const AddMedicinePage: React.FC = () => {
     useEffect(() => {
         if (id) {
             const fetchMedicine = async () => {
+
+                try{
                 setLoading(true); // Start loading
                 const response = await getMedicineById(id);
                 if (response) {
                     setFormData(response?.data);
                 }
+            }catch(e:any){
+                console.log("🚀 ~ fetchMedicine ~ e:", e)
+                
+            }
+            finally{
                 setLoading(false); // Stop loading
+            }
             };
             fetchMedicine();
         }
@@ -203,9 +209,6 @@ const AddMedicinePage: React.FC = () => {
         setErrors(newErrors);
         return isValid;
     };
-
-
-    console.log("formData", formData)
 
     // Step 3: Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {

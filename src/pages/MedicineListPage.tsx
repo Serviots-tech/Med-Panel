@@ -15,12 +15,13 @@ const MedicineListPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setpageSize] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
+    const [isLoading,setIsLoading]=useState(false)
 
 
     // Fetching the list of medicines
     const fetchMedicines = async () => {
         try {
-
+            setIsLoading(true)
             const query = {
                 currentPage,
                 pageSize
@@ -31,12 +32,14 @@ const MedicineListPage: React.FC = () => {
                 setMedicines(response.data);
                 setCurrentPage(response?.pagination?.page)
                 setTotalRecords(response?.pagination?.totalRecords)
-                console.log("Fetched medicines:", response.pagination);
             } else {
                 console.error('API response does not contain a valid medicines array:', response);
             }
         } catch (error) {
             console.error("Error fetching medicines:", error);
+        }
+        finally{
+            setIsLoading(false)
         }
     };
 
@@ -88,6 +91,7 @@ const MedicineListPage: React.FC = () => {
                 {/* Medicine Table */}
                 <MedicineTable
                     medicines={medicines}
+                    isLoading={isLoading}
                     onViewDetails={handleViewDetails}
                     onDelete={handleDelete}
                     onAddNew={() => console.log("Add new medicine clicked")}

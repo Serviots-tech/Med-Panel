@@ -1,0 +1,25 @@
+.custom-table .ant-table-thead > tr > th {
+    background-color: #f0f2f5; /* Light grey background for the header */
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #ddd; /* Border for header */
+}
+
+.custom-table .ant-table-tbody > tr > td {
+    border: 1px solid #ddd; /* Border for table cells */
+    padding: 12px; /* Adds padding inside cells for better spacing */
+}
+
+.custom-table .ant-pagination {
+    margin-top: 16px; /* Space between table and pagination */
+}
+
+.custom-table .ant-table-wrapper {
+    border-radius: 8px; /* Optional: rounded corners for the table */
+    overflow: hidden; /* To ensure rounded corners are visible */
+}
+
+/* Optional: Add hover effect for rows */
+.custom-table .ant-table-tbody > tr:hover {
+    background-color: #fafafa; /* Light background color on row hover */
+}
