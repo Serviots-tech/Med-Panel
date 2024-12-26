@@ -25,6 +25,7 @@ interface MedicineTableProps {
     currentPage: number;
     totalRecords: number;
     pagesize: number;
+    isLoading:boolean
 }
 
 const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails, isLoading, onAddNew, setMedicines, handlePageChange, currentPage, totalRecords, pagesize }) => {

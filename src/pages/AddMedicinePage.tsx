@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MedicineForm from '../components/MedicineForm';
+import { MedicineForm } from '../components/MedicineForm';
 import { MedicineFormInput } from '../types/medicine'; // import your types
 import { createMedicine, getMedicineById, updateMedicine } from '../services/medicine';
 import { toast } from 'react-toastify';
