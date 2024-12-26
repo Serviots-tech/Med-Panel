@@ -41,6 +41,8 @@ const AddMedicinePage: React.FC = () => {
         expiryDate: null,
     });
 
+    const [isSubmitFormLoading,setIsSubmitFormLoading]=useState(false)
+
 
     // Store validation errors
     const [errors, setErrors] = useState<any>({});
@@ -54,6 +56,7 @@ const AddMedicinePage: React.FC = () => {
                 try{
                 setLoading(true); // Start loading
                 const response = await getMedicineById(id);
+                console.log("🚀 ~ fetchMedicine ~ response:", response)
                 if (response) {
                     setFormData(response?.data);
                 }
@@ -212,6 +215,7 @@ const AddMedicinePage: React.FC = () => {
 
     // Step 3: Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
+
         e.preventDefault();
 
         // Validate the form before submitting
@@ -220,6 +224,7 @@ const AddMedicinePage: React.FC = () => {
         }
 
         try {
+            setIsSubmitFormLoading(true)
             // Ensure price is a valid number (float)
             if (formData.price) {
                 formData.price = parseFloat(formData.price.toString()); // Convert string to float
@@ -283,6 +288,9 @@ const AddMedicinePage: React.FC = () => {
             console.error("Error submitting the form:", error);
             toast.error('Error adding medicine');
         }
+        finally{
+            setIsSubmitFormLoading(false)
+        }
     };
 
 
@@ -291,7 +299,7 @@ const AddMedicinePage: React.FC = () => {
             <h1 className="text-2xl font-bold text-center mb-2 mt-2">
                 <Link to={'/'}>
                     <button
-                        className="bg-blue-500 text-white rounded-lg flex items-center justify-center"
+                        className=" text-gray rounded-lg flex items-center justify-center"
                     >
                         <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     </button>
@@ -304,6 +312,8 @@ const AddMedicinePage: React.FC = () => {
                 formData={formData}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
+                isLoading={loading}
+                isSubmitFormLoading={isSubmitFormLoading}
             />
         </div>
     );

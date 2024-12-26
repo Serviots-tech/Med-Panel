@@ -34,6 +34,8 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
     const navigate = useNavigate();
     const context = useContext(PermissionContext);
 
+    const [isDeleteLoading, setIsDeleteLoading] = useState(false)
+
 
     const handleDeleteClick = (medicine: Medicine) => {
         setMedicineToDelete(medicine);
@@ -41,17 +43,26 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
     };
 
     const handleConfirmDelete = async () => {
-        if (medicineToDelete) {
-            const isDeleted = await deleteMedicine(medicineToDelete.id);
-            toast.success("Medicine deleted successfully");
-            if (isDeleted) {
-                setMedicines((prevMedicines) =>
-                    prevMedicines.filter((item) => item.id !== medicineToDelete.id)
-                );
+
+        try {
+            setIsDeleteLoading(true)
+            if (medicineToDelete) {
+                const isDeleted = await deleteMedicine(medicineToDelete.id);
+                toast.success("Medicine deleted successfully");
+                if (isDeleted) {
+                    setMedicines((prevMedicines) =>
+                        prevMedicines.filter((item) => item.id !== medicineToDelete.id)
+                    );
+                }
             }
+        } catch (e: any) {
+            console.log("🚀 ~ handleConfirmDelete ~ e:", e)
+
+        } finally {
+            setIsDeleteLoading(false)
+            setIsModalOpen(false);
+            setMedicineToDelete(null);
         }
-        setIsModalOpen(false);
-        setMedicineToDelete(null);
     };
 
     const handleCancelDelete = () => {
@@ -178,6 +189,7 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
                 open={isModalOpen}
                 onClose={handleCancelDelete}
                 onConfirm={handleConfirmDelete}
+                isDeleteLoading={isDeleteLoading}
                 medicineName={medicineToDelete?.medicineName || ""}
             />
             <AddUserModal

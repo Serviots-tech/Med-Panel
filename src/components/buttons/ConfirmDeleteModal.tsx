@@ -8,9 +8,10 @@ interface ConfirmDeleteModalProps {
     onClose: () => void;
     onConfirm: () => void;
     medicineName: string;
+    isDeleteLoading:boolean;
 }
 
-const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ open, onClose, onConfirm, medicineName }) => {
+const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ open, onClose, onConfirm, medicineName,isDeleteLoading }) => {
     return (
         <Modal
             title="Are you sure?"
@@ -19,7 +20,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ open, onClose, 
             onOk={onConfirm}
             okText="Yes, Delete"
             cancelText="Cancel"
-            okButtonProps={{ danger: true }}
+            okButtonProps={{ danger: true,loading:isDeleteLoading }}
         >
             <div className="flex justify-center mb-4">
                 <ExclamationCircleOutlined style={{ fontSize: '48px', color: '#ff4d4f' }} />
