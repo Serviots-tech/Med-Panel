@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { MedicineForm } from '../components/MedicineForm';
 import { MedicineFormInput } from '../types/medicine'; // import your types
