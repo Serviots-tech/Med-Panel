@@ -2,6 +2,8 @@ import React from 'react';
 import { Medicine } from '../types/medicine';
 // import { XMarkIcon } from '@heroicons/react/16/solid';
 import { Modal, Row, Col, Typography, Divider } from 'antd';
+import { Image } from 'antd';
+import { configData } from '../helpers/config';
 
 const { Text } = Typography;
 
@@ -11,6 +13,7 @@ interface MedicineModalProps {
 }
 
 const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
+    console.log("🚀 ~ medicine:", medicine)
     if (!medicine) return null;
 
     return (
@@ -166,6 +169,16 @@ const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
                         <Text strong>Special Considerations :- </Text>
                         <Text>{medicine.specialConsiderations}</Text>
                     </Col>
+                     { medicine?.image && <Col span={8}>
+                        <Text strong>image :- </Text>
+                        <Image
+                            src={`${configData.s3baseURL}${medicine.image}`}
+                            alt="medicine image"
+                            width={200} // Adjust width as per your needs
+                            height={200} // Adjust height as per your needs
+                            style={{ borderRadius: '8px' }} // Optional styling
+                        />
+                    </Col>}
                 </Row>
             </div>
         </Modal>

@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { useState } from 'react';
 import { MedicineFormInput } from '../types/medicine';
-import { Button } from 'antd';
+import { Button, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadProps } from 'antd';
+import { toast } from 'react-toastify';
 
 interface MedicineFormProps {
     formData: MedicineFormInput;
@@ -10,10 +14,52 @@ interface MedicineFormProps {
     errors: any;
     isSubmitFormLoading: boolean;
     isLoading: boolean;
+    file: any;
+    setFile: any; 
+    fileList: any; 
+    setFileList: any;
 }
 
-export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, handleSubmit, errors, isSubmitFormLoading, isLoading }) => {
+export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, handleSubmit, errors, isSubmitFormLoading, isLoading, file, setFile, fileList, setFileList }) => {
 
+
+    let isRemoving = false;
+    const propsUpload = {
+        name: 'file',
+        accept: '.jpg,.jpeg,.png',
+        maxCount: 1,
+        fileList: fileList,
+        beforeUpload: (file: any) => {
+            return false;
+        },
+        onChange(info: any) {
+            const { file } = info;
+            if (file?.size) {
+                const isLt1M = file?.size / 1024 / 1024 < 1;
+
+                if (!isLt1M) {
+                    toast.error('Image must smaller than 1MB!');
+                    return;
+                }
+            }
+
+            if (!isRemoving) {
+                setFile(info.file);
+                setFileList([info.file]);
+            } else {
+                isRemoving = false;
+                setFile(null);
+                setFileList([]);
+            }
+        },
+        onDrop: () => {
+            setFile(null);
+            setFileList([]);
+        },
+        onRemove: () => {
+            isRemoving = true;
+        },
+    };
     return (
         <div>
             {isLoading ? (
@@ -59,6 +105,18 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChan
                                 <p className="text-red-500 text-xs mt-1">{errors.brandName}</p>
                             )}
                         </div>
+
+                        {/* Brand Name */}
+                        <div className="col-span-1">
+                            <label htmlFor="medImage" className="block text-sm font-medium   text-gray-700 mb-2">Brand Name</label>
+                            <Upload {...propsUpload}>
+                                <Button icon={<UploadOutlined />}>Upload</Button>
+                            </Upload>
+                            {errors.brandName && (
+                                <p className="text-red-500 text-xs mt-1">{errors.brandName}</p>
+                            )}
+                        </div>
+
 
                         {/* Generic Name */}
                         <div className="col-span-1">

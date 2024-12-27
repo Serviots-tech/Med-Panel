@@ -2,15 +2,25 @@
 import React, { useEffect, useState } from 'react';
 import { MedicineForm } from '../components/MedicineForm';
 import { MedicineFormInput } from '../types/medicine'; // import your types
-import { createMedicine, getMedicineById, updateMedicine } from '../services/medicine';
+import {
+     createMedicine,
+     getMedicineById, 
+    updateMedicine 
+} from '../services/medicine';
 import { toast } from 'react-toastify';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/16/solid';
 
 const AddMedicinePage: React.FC = () => {
 
     const { id } = useParams();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
+
+    const [file, setFile] = useState<any>(null);
+    const [fileList, setFileList] = useState<any[]>([]);
+    // const [hasError, setHasError] = useState(false);
+    // const [documentName, setDocumentName] = useState('');
+    // const [isSubmitClick, setIsSubmitClick] = useState(false);
 
     // Step 1: Define the state for form data
     const [formData, setFormData] = useState<MedicineFormInput>({
@@ -39,10 +49,10 @@ const AddMedicinePage: React.FC = () => {
         ndc: '',
         distributor: '',
         specialConsiderations: '',
-        expiryDate: null,
+        // expiryDate: null,
     });
 
-    const [isSubmitFormLoading,setIsSubmitFormLoading]=useState(false)
+    const [isSubmitFormLoading, setIsSubmitFormLoading] = useState(false)
 
 
     // Store validation errors
@@ -54,20 +64,20 @@ const AddMedicinePage: React.FC = () => {
         if (id) {
             const fetchMedicine = async () => {
 
-                try{
-                setLoading(true); // Start loading
-                const response = await getMedicineById(id);
-                console.log("🚀 ~ fetchMedicine ~ response:", response)
-                if (response) {
-                    setFormData(response?.data);
+                try {
+                    setLoading(true); // Start loading
+                    const response = await getMedicineById(id);
+                    console.log("🚀 ~ fetchMedicine ~ response:", response)
+                    if (response) {
+                        setFormData(response?.data);
+                    }
+                } catch (e: any) {
+                    console.log("🚀 ~ fetchMedicine ~ e:", e)
+
                 }
-            }catch(e:any){
-                console.log("🚀 ~ fetchMedicine ~ e:", e)
-                
-            }
-            finally{
-                setLoading(false); // Stop loading
-            }
+                finally {
+                    setLoading(false); // Stop loading
+                }
             };
             fetchMedicine();
         }
@@ -225,6 +235,10 @@ const AddMedicinePage: React.FC = () => {
         }
 
         try {
+
+            const finalData = new FormData();
+            
+            console.log("🚀 ~ handleSubmit ~ finalData:", finalData)
             setIsSubmitFormLoading(true)
             // Ensure price is a valid number (float)
             if (formData.price) {
@@ -236,20 +250,24 @@ const AddMedicinePage: React.FC = () => {
                 formData.price = 0;
             }
 
+            for (const [key, value] of Object.entries(formData)) {
+                finalData.append(key, value);
+            }
+
+            finalData.append('file', file);
+
             // Remove the `id` field from the form data if it's included
             const { id, ...dataToSubmit } = formData;
 
             if (id) {
                 // Update existing medicine
                 await updateMedicine(id, dataToSubmit);
-                toast.success('Medicine Update successfully!');
             } else {
                 // Add new medicine
-                await createMedicine(dataToSubmit);
-                toast.success('Medicine added successfully!');
+                await createMedicine(finalData);
             }
             // Redirect to the medicines list page after the operation
-            navigate('/');
+            // navigate('/');
 
             if (loading) {
                 return <div>Loading...</div>;
@@ -282,18 +300,48 @@ const AddMedicinePage: React.FC = () => {
                 ndc: '',
                 distributor: '',
                 specialConsiderations: '',
-                expiryDate: null,
+                // expiryDate: null,
             });
 
         } catch (error) {
             console.error("Error submitting the form:", error);
             toast.error('Error adding medicine');
         }
-        finally{
+        finally {
             setIsSubmitFormLoading(false)
         }
     };
 
+
+    // const handleSubmit = async () => {
+    //     setIsSubmitClick(true);
+    //     let _documentName = documentName.trim();
+    //     if (invalidText(documentName)) {
+    //         setHasError(true);
+    //         return;
+    //     }
+    //     _documentName = _documentName.replace(/ /g, '_');
+    //     if (!file) {
+    //         return;
+    //     }
+    //     try {
+    //         setIsLoading(true);
+    //         let formData = new FormData();
+    //         formData.append('documentName', _documentName);
+    //         formData.append('employeeId', employeeId);
+    //         formData.append('file', file);
+    //         await employeeApi.uploadEmployeeDocument(formData);
+    //         // await postApi('/employee/upload-docs', formData, true);
+    //         fetchDocumentData();
+
+    //     } catch (error: any) {
+    //         const message = error?.response?.data?.error?.description || 'Something went wrong in upload document';
+    //         toastText(message, 'error');
+    //     } finally {
+    //         setIsLoading(false);
+    //         handleModalCancel()
+    //     }
+    // };
 
     return (
         <div className="container mx-auto p-6">
@@ -315,6 +363,10 @@ const AddMedicinePage: React.FC = () => {
                 handleSubmit={handleSubmit}
                 isLoading={loading}
                 isSubmitFormLoading={isSubmitFormLoading}
+                setFileList={setFileList}
+                fileList={fileList}
+                file={file}
+                setFile={setFile}
             />
         </div>
     );

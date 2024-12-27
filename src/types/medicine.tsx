@@ -38,7 +38,8 @@ export interface Medicine {
     ndc: string;
     distributor: string;
     specialConsiderations: string;
-    expiryDate: Date | null;
+    image?:string;
+    // expiryDate: Date | null;
 }
 
 // Type for Medicine form input, used when creating or updating a medicine
@@ -69,5 +70,7 @@ export interface MedicineFormInput {
     ndc: string;
     distributor: string;
     specialConsiderations: string;
-    expiryDate: Date | null;
+    image?:string;
+
+    // expiryDate: Date | null;
 }

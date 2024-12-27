@@ -41,9 +41,13 @@ export const getMedicineById = async (id: string) => {
 };
 
 // Create a new medicine
-export const createMedicine = async (medicineData: MedicineFormInput) => {
+export const createMedicine = async (medicineData: any) => {
     try {
-        const response = await axios.post(`${API_URL}/medicines/add`, medicineData);
+        const response = await axios.post(`${API_URL}/medicines/add`, medicineData,{
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     } catch (error: any) {
         // Log the full error to see more details from the server
@@ -55,7 +59,11 @@ export const createMedicine = async (medicineData: MedicineFormInput) => {
 // Update an existing medicine
 export const updateMedicine = async (id: string, medicineData: MedicineFormInput) => {
     try {
-        const response = await axios.put(`${API_URL}/medicines/${id}`, medicineData);
+        const response = await axios.put(`${API_URL}/medicines/${id}`, medicineData,{
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         console.log('Medicine updated successfully', response.data);
         return response.data;
     } catch (error) {
