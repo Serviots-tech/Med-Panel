@@ -2,7 +2,6 @@
 export type DrugCategory = 'Antibiotic' | 'Painkiller' | 'Vitamin' | 'Antifungal' | 'Antiviral' | 'Select';
 
 // Enum for Dosage Form, matching Prisma's schema
-export type DosageForm = 'Tablet' | 'Capsule' | 'Liquid' | 'Ointment' | 'Injection' | 'Select';
 type Float = number;
 
 export type PrescriptionReq = "YES" | "NO" | "Select";
@@ -17,7 +16,7 @@ export interface Medicine {
     brandName: string;
     GenericName: string;
     drugCategory: string;
-    dosageForm: string;
+    doseFormId: string;
     strength: string;
     manufacturer: string;
     packSize: string;
@@ -51,7 +50,7 @@ export interface MedicineFormInput {
     brandName: string;
     GenericName: string;
     drugCategory: string;
-    dosageForm: string;
+    doseFormId: string;
     strength: string;
     manufacturer: string;
     packSize: string;

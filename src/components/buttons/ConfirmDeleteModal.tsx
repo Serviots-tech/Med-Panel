@@ -7,11 +7,11 @@ interface ConfirmDeleteModalProps {
     open: boolean;
     onClose: () => void;
     onConfirm: () => void;
-    medicineName: string;
+    itemName?: string;
     isDeleteLoading:boolean;
 }
 
-const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ open, onClose, onConfirm, medicineName,isDeleteLoading }) => {
+const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ open, onClose, onConfirm, itemName,isDeleteLoading }) => {
     return (
         <Modal
             title="Are you sure?"
@@ -26,7 +26,7 @@ const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ open, onClose, 
                 <ExclamationCircleOutlined style={{ fontSize: '48px', color: '#ff4d4f' }} />
             </div>
             <p>
-                Are you sure you want to permanently delete the medicine <strong>{medicineName}</strong> from your list?
+                Are you sure you want to permanently delete the  <strong>{itemName}</strong> from your list?
                 This action cannot be undone and the data will be lost forever.
             </p>
         </Modal>

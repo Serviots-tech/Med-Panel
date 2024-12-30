@@ -35,6 +35,11 @@ export const putApi = (url: string, apiData: any, flag?: boolean) => {
 	return axios.put(`${endPoint}${url}`, apiData, apiConfig(flag));
 };
 
-export const deleteApi = (url: string) => {
-	return axios.delete(`${endPoint}${url}`, apiConfig());
+
+
+export const deleteApiWithData = (url: string, apiData?: any) => {
+	return axios.delete(`${endPoint}${url}`, {
+		data: apiData,
+		...apiConfig(),
+	});
 };

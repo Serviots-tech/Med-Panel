@@ -1,14 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "antd";
 import { useEffect, useState } from "react";
-
 
 const PageNotFoundPage = () => {
     const navigate = useNavigate();
     const [secondsRemaining, setSecondsRemaining] = useState(10);
 
     useEffect(() => {
-
         // Create an interval to count down the seconds remaining
         const intervalId = setInterval(() => {
             setSecondsRemaining((prevSeconds) => {
@@ -22,24 +19,24 @@ const PageNotFoundPage = () => {
             });
         }, 1000); // The interval runs every 1000ms (1 second)
 
-
+        return () => clearInterval(intervalId); // Cleanup the interval on component unmount
     }, [navigate]);
 
-    // Use the Button component from Ant Design to provide a UI for navigation
     return (
-        <div id="notfound">
-            <div className="notfound">
-                <div className="notfound-error">
-                    <h1>404</h1>
-                    <h2>Page Not Found</h2>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+            <div className="text-center">
+                <div className="mb-4">
+                    <h1 className="text-6xl font-bold text-red-500">404</h1>
+                    <h2 className="text-2xl font-semibold text-gray-800">Page Not Found</h2>
                 </div>
-                <Button type="primary" className="returnLogin" onClick={() => navigate("/")}>
-                    Back to Home page
-                </Button>
-                {/* Display a message indicating the automatic logout countdown */}
-                <p>
-                    You will be automatically redirect to home page in {secondsRemaining}{" "}
-                    {secondsRemaining === 1 ? "second" : "seconds"}
+                <button
+                    onClick={() => navigate("/")}
+                    className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                >
+                    Back to Home Page
+                </button>
+                <p className="mt-4 text-gray-600">
+                    You will be automatically redirected to the home page in {secondsRemaining} {secondsRemaining === 1 ? "second" : "seconds"}.
                 </p>
             </div>
         </div>

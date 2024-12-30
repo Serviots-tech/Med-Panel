@@ -57,7 +57,7 @@ const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
                     </Col>
                     <Col span={8}>
                         <Text strong>Dosage Form :- </Text>
-                        <Text>{medicine.dosageForm}</Text>
+                        <Text>{medicine.doseFormId}</Text>
                     </Col>
                 </Row>
 

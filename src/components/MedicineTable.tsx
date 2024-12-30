@@ -143,6 +143,7 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
                 </div>
                 <div className="flex space-x-4">
                     {context.userRole === "ADMIN" && (
+                        <>
                         <Button
                             type="primary"
                             onClick={() => {
@@ -151,6 +152,15 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
                         >
                             Add User
                         </Button>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                            navigate('/dose-form')
+                            }}
+                        >
+                            Dose Form
+                        </Button>
+                        </>
                     )}
                     <Button
                         type="primary"
@@ -192,7 +202,7 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
                 onClose={handleCancelDelete}
                 onConfirm={handleConfirmDelete}
                 isDeleteLoading={isDeleteLoading}
-                medicineName={medicineToDelete?.medicineName || ""}
+                itemName={medicineToDelete?.medicineName || ""}
             />
             <AddUserModal
                 isAddUserModelOpen={isAddUserModalOpen}

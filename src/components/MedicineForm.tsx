@@ -21,14 +21,13 @@ interface MedicineFormProps {
     setFormError: any
     isSubmitFormLoading: boolean;
     isLoading: boolean;
-    file: any;
-    setFile: any;
+    doseFormData: any;
     fileList: any;
     setFileList: any;
     setFormData: any
 }
 
-export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormData, handleChange, handleSubmit, formError, setFormError, isSubmitFormLoading, isLoading, file, setFile, fileList, setFileList }) => {
+export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormData, handleChange, handleSubmit, formError, setFormError, isSubmitFormLoading, isLoading, doseFormData, fileList, setFileList }) => {
 
 
     let isRemoving = false;
@@ -273,21 +272,18 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                         <Col span={8}>
                             <SelectDropdown
                                 placeholder="Select Dosage Form"
-                                options={[
-                                    { label: 'Tablet', value: 'Tablet' },
-                                    { label: 'Capsule', value: 'Capsule' },
-                                    { label: 'Liquid', value: 'Liquid' },
-                                    { label: 'Ointment', value: 'Ointment' },
-                                    { label: 'Injection', value: 'Injection' }
-                                ]}
-                                value={formData.dosageForm}
-                                onChange={(value) => handleChangeValue(value, 'dosageForm', true)}
+                                options={doseFormData?.map((item:any) => ({
+                                    label: item.name,
+                                    value: item.id
+                                })) }
+                                value={formData.doseFormId}
+                                onChange={(value) => handleChangeValue(value, 'doseFormId', true)}
                                 size="large"
                                 required={true}
                                 helperText="Dosage form is required"
                                 label="Dosage Form"
                                 disabled={false}
-                                isError={formError.dosageForm}
+                                isError={formError.doseFormId}
                             />
                         </Col>
 
