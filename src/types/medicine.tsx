@@ -16,8 +16,8 @@ export interface Medicine {
     medicineName: string;
     brandName: string;
     GenericName: string;
-    drugCategory: DrugCategory;
-    dosageForm: DosageForm;
+    drugCategory: string;
+    dosageForm: string;
     strength: string;
     manufacturer: string;
     packSize: string;
@@ -29,8 +29,8 @@ export interface Medicine {
     contraindications: string;
     storageConditions: string;
     shelfLife: string;
-    prescriptionReq: PrescriptionReq;
-    approvalInfo: ApprovalInfo;
+    prescriptionReq: string;
+    approvalInfo: string;
     barcodeSKU: string; // unique
     batchNumber: string;
     interactions: string;
@@ -39,6 +39,8 @@ export interface Medicine {
     distributor: string;
     specialConsiderations: string;
     image?:string;
+    scheduleType:string;
+    gstPercentage:number
     // expiryDate: Date | null;
 }
 
@@ -48,8 +50,8 @@ export interface MedicineFormInput {
     medicineName: string;
     brandName: string;
     GenericName: string;
-    drugCategory: DrugCategory;
-    dosageForm: DosageForm;
+    drugCategory: string;
+    dosageForm: string;
     strength: string;
     manufacturer: string;
     packSize: string;
@@ -61,8 +63,8 @@ export interface MedicineFormInput {
     contraindications: string;
     storageConditions: string;
     shelfLife: string;
-    prescriptionReq: PrescriptionReq;
-    approvalInfo: ApprovalInfo;
+    prescriptionReq: string;
+    approvalInfo: string;
     barcodeSKU: string;
     batchNumber: string;
     interactions: string;
@@ -71,6 +73,8 @@ export interface MedicineFormInput {
     distributor: string;
     specialConsiderations: string;
     image?:string;
+    scheduleType:string;
+    gstPercentage:number
 
     // expiryDate: Date | null;
 }

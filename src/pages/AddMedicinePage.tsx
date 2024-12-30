@@ -3,21 +3,24 @@ import React, { useEffect, useState } from 'react';
 import { MedicineForm } from '../components/MedicineForm';
 import { MedicineFormInput } from '../types/medicine'; // import your types
 import {
-     createMedicine,
-     getMedicineById, 
-    updateMedicine 
+    createMedicine,
+    getMedicineById,
+    updateMedicine
 } from '../services/medicine';
 import { toast } from 'react-toastify';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeftIcon } from '@heroicons/react/16/solid';
+import { hasFormError, validateFormData } from '../helpers/utils';
+import { Loader } from '../components/Loader';
 
 const AddMedicinePage: React.FC = () => {
 
     const { id } = useParams();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [file, setFile] = useState<any>(null);
     const [fileList, setFileList] = useState<any[]>([]);
+    console.log("🚀 ~ fileList:", fileList)
     // const [hasError, setHasError] = useState(false);
     // const [documentName, setDocumentName] = useState('');
     // const [isSubmitClick, setIsSubmitClick] = useState(false);
@@ -27,8 +30,8 @@ const AddMedicinePage: React.FC = () => {
         medicineName: '',
         brandName: '',
         GenericName: '',
-        drugCategory: 'Select',
-        dosageForm: 'Select',
+        drugCategory: '',
+        dosageForm: '',
         strength: '',
         manufacturer: '',
         packSize: '',
@@ -40,8 +43,8 @@ const AddMedicinePage: React.FC = () => {
         contraindications: '',
         storageConditions: '',
         shelfLife: '',
-        prescriptionReq: 'Select',
-        approvalInfo: 'Select',
+        prescriptionReq: '',
+        approvalInfo: '',
         barcodeSKU: '',
         batchNumber: '',
         interactions: '',
@@ -49,6 +52,39 @@ const AddMedicinePage: React.FC = () => {
         ndc: '',
         distributor: '',
         specialConsiderations: '',
+        scheduleType:'',
+        gstPercentage:0
+        // expiryDate: null,
+    });
+
+    const [formError, setFormError] = useState<any>({
+        medicineName: false,
+        brandName: false,
+        GenericName: false,
+        drugCategory: false,
+        dosageForm: false,
+        strength: false,
+        manufacturer: false,
+        packSize: false,
+        price: false,
+        routeOfAdministration: false,
+        TherapeuticClass: false,
+        indications: false,
+        sideEffects: false,
+        contraindications: false,
+        storageConditions: false,
+        shelfLife: false,
+        prescriptionReq: false,
+        approvalInfo: false,
+        barcodeSKU: false,
+        batchNumber: false,
+        interactions: false,
+        countryOfOrigin: false,
+        ndc: false,
+        distributor: false,
+        specialConsiderations: false,
+        scheduleType:false,
+        gstPercentage:false
         // expiryDate: null,
     });
 
@@ -56,7 +92,7 @@ const AddMedicinePage: React.FC = () => {
 
 
     // Store validation errors
-    const [errors, setErrors] = useState<any>({});
+    // const [errors, setErrors] = useState<any>({});
     const [loading, setLoading] = useState<boolean>(false);
 
     // Fetch existing medicine data if id is provided
@@ -67,7 +103,6 @@ const AddMedicinePage: React.FC = () => {
                 try {
                     setLoading(true); // Start loading
                     const response = await getMedicineById(id);
-                    console.log("🚀 ~ fetchMedicine ~ response:", response)
                     if (response) {
                         setFormData(response?.data);
                     }
@@ -92,185 +127,74 @@ const AddMedicinePage: React.FC = () => {
         }));
     };
 
-    const validateForm = (): boolean => {
-        const newErrors: any = {};
-        let isValid = true;
-
-        // Required Fields Validation
-        if (!formData.medicineName.trim()) {
-            newErrors.medicineName = 'Medicine name is required';
-            isValid = false;
-        }
-
-        if (!formData.brandName.trim()) {
-            newErrors.brandName = 'Brand name is required';
-            isValid = false;
-        }
-
-        if (!formData.GenericName.trim()) {
-            newErrors.GenericName = 'Brand name is required';
-            isValid = false;
-        }
-
-        if (!formData.strength.trim()) {
-            newErrors.strength = 'Strength is required';
-            isValid = false;
-        }
-
-        if (!formData.manufacturer.trim()) {
-            newErrors.manufacturer = 'Manufacturer is required';
-            isValid = false;
-        }
-
-        if (!formData.packSize.trim()) {
-            newErrors.packSize = 'Pack size is required';
-            isValid = false;
-        }
-
-        if (formData.price <= 0 || isNaN(formData.price)) {
-            newErrors.price = 'Price must be greater than 0 and a valid number';
-            isValid = false;
-        }
-
-        if (!formData.routeOfAdministration.trim()) {
-            newErrors.routeOfAdministration = 'Route of administration is required';
-            isValid = false;
-        }
-
-        if (!formData.shelfLife.trim()) {
-            newErrors.shelfLife = 'Shelf life is required';
-            isValid = false;
-        }
-
-        if (!formData.indications.trim()) {
-            newErrors.indications = 'Indications are required';
-            isValid = false;
-        }
-
-        if (!formData.sideEffects.trim()) {
-            newErrors.sideEffects = 'Side effects are required';
-            isValid = false;
-        }
-
-        if (!formData.contraindications.trim()) {
-            newErrors.contraindications = 'Contraindications are required';
-            isValid = false;
-        }
-
-        if (!formData.storageConditions.trim()) {
-            newErrors.storageConditions = 'Storage conditions are required';
-            isValid = false;
-        }
-
-        if (!formData.batchNumber.trim()) {
-            newErrors.batchNumber = 'Batch number is required';
-            isValid = false;
-        }
-
-        if (!formData.interactions.trim()) {
-            newErrors.interactions = 'Interactions are required';
-            isValid = false;
-        }
-
-        if (!formData.countryOfOrigin.trim()) {
-            newErrors.countryOfOrigin = 'Country of origin is required';
-            isValid = false;
-        }
-
-        if (!formData.ndc.trim()) {
-            newErrors.ndc = 'NDC is required';
-            isValid = false;
-        }
-
-        if (!formData.distributor.trim()) {
-            newErrors.distributor = 'Distributor is required';
-            isValid = false;
-        }
-
-        // Optional Fields Validation
-        if (formData.barcodeSKU && formData.barcodeSKU.trim().length === 0) {
-            newErrors.barcodeSKU = 'Barcode SKU must be valid if provided';
-            isValid = false;
-        }
-
-        if (formData.specialConsiderations && formData.specialConsiderations.trim().length === 0) {
-            newErrors.specialConsiderations = 'Special considerations must be valid if provided';
-            isValid = false;
-        }
-
-        // Dropdown Selections Validation
-        if (formData.drugCategory === 'Select') {
-            newErrors.drugCategory = 'Drug category is required';
-            isValid = false;
-        }
-
-        if (formData.dosageForm === 'Select') {
-            newErrors.dosageForm = 'Dosage form is required';
-            isValid = false;
-        }
-
-        if (formData.prescriptionReq === 'Select') {
-            newErrors.prescriptionReq = 'Prescription Requirement form is required';
-            isValid = false;
-        }
-
-        if (formData.approvalInfo === 'Select') {
-            newErrors.approvalInfo = 'Approval information is required';
-            isValid = false;
-        }
-
-
-        setErrors(newErrors);
-        return isValid;
-    };
 
     // Step 3: Handle form submission
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async () => {
 
-        e.preventDefault();
+        // e.preventDefault();
+        const checkFormError = validateFormData(
+			{
+				...formData,
+			},
+			{ ...formError }
+		);
+		// checkFormError = {
+		// 	...checkFormError,
+		// 	employeeTPIN: !/^\d{10}$/.test(taxationDetails.employeeTPIN),
+		// };
 
-        // Validate the form before submitting
-        if (!validateForm()) {
-            return;
-        }
+		setFormError(checkFormError);
+
+		if (hasFormError(checkFormError)) {
+			return;
+		} else {
+
 
         try {
 
             const finalData = new FormData();
-            
-            console.log("🚀 ~ handleSubmit ~ finalData:", finalData)
+
             setIsSubmitFormLoading(true)
             // Ensure price is a valid number (float)
-            if (formData.price) {
+            if (formData?.price) {
                 formData.price = parseFloat(formData.price.toString()); // Convert string to float
             }
 
             // Handle any invalid price (NaN or non-numeric)
-            if (isNaN(formData.price)) {
+            if (isNaN(formData?.price)) {
                 formData.price = 0;
+            }
+
+            if(!(formData?.image as any)?.length && fileList.length < 3){
+                toast.error("upload minimum 3 images")
+                return
             }
 
             for (const [key, value] of Object.entries(formData)) {
                 finalData.append(key, value);
             }
 
-            finalData.append('file', file);
+
+            fileList.forEach((file) => {
+                finalData.append('files', file.originFileObj);
+            });
+            // finalData.append('files', file);
 
             // Remove the `id` field from the form data if it's included
-            const { id, ...dataToSubmit } = formData;
+            const { id } = formData;
 
             if (id) {
                 // Update existing medicine
-                await updateMedicine(id, dataToSubmit);
+                await updateMedicine(id, finalData);
             } else {
                 // Add new medicine
                 await createMedicine(finalData);
             }
             // Redirect to the medicines list page after the operation
-            // navigate('/');
+            navigate('/');
 
             if (loading) {
-                return <div>Loading...</div>;
+                return <Loader/>;
             }
 
             // Reset the form after successful submission
@@ -300,6 +224,8 @@ const AddMedicinePage: React.FC = () => {
                 ndc: '',
                 distributor: '',
                 specialConsiderations: '',
+                scheduleType:'',
+                gstPercentage:0
                 // expiryDate: null,
             });
 
@@ -310,6 +236,7 @@ const AddMedicinePage: React.FC = () => {
         finally {
             setIsSubmitFormLoading(false)
         }
+    }
     };
 
 
@@ -357,8 +284,10 @@ const AddMedicinePage: React.FC = () => {
             <hr />
             {/* Step 4: Pass formData and handlers to the MedicineForm component */}
             <MedicineForm
-                errors={errors}
+                formError={formError}
+                setFormError={setFormError}
                 formData={formData}
+                setFormData={setFormData}
                 handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 isLoading={loading}

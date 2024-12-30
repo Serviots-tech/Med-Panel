@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import { MedicineFormInput } from '../types/medicine';
 import { configData } from '../helpers/config';
 
 // Set base URL for API
@@ -57,7 +56,7 @@ export const createMedicine = async (medicineData: any) => {
 };
 
 // Update an existing medicine
-export const updateMedicine = async (id: string, medicineData: MedicineFormInput) => {
+export const updateMedicine = async (id: string, medicineData: any) => {
     try {
         const response = await axios.put(`${API_URL}/medicines/${id}`, medicineData,{
             headers: {

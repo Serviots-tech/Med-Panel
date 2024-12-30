@@ -126,7 +126,7 @@ const MedicineTable: React.FC<MedicineTableProps> = ({ medicines, onViewDetails,
     ];
 
     return (
-        <div className="max-w-6xl mx-auto p-4">
+        <div className="p-4">
             {/* Add New Button */}
             <div className="flex justify-between mb-4">
                 <div>

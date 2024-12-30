@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Medicine } from '../types/medicine';
 // import { XMarkIcon } from '@heroicons/react/16/solid';
@@ -162,23 +163,40 @@ const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
                     </Col>
                 </Row>
 
-                <Divider />
-
                 <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Schedule Type :- </Text>
+                        <Text>{medicine.scheduleType}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>GST Percentage :- </Text>
+                        <Text>{medicine.gstPercentage}</Text>
+                    </Col>
                     <Col span={8}>
                         <Text strong>Special Considerations :- </Text>
                         <Text>{medicine.specialConsiderations}</Text>
                     </Col>
-                     { medicine?.image && <Col span={8}>
-                        <Text strong>image :- </Text>
-                        <Image
-                            src={`${configData.s3baseURL}${medicine.image}`}
-                            alt="medicine image"
-                            width={200} // Adjust width as per your needs
-                            height={200} // Adjust height as per your needs
-                            style={{ borderRadius: '8px' }} // Optional styling
-                        />
-                    </Col>}
+                </Row>
+
+                <Divider />
+
+                <Row gutter={24}>
+                    {medicine?.image?.length && (
+                        <Col span={24}>
+                            <Text strong>Image:</Text>
+                            <Row gutter={16}>
+                                {(medicine?.image as any).map((url: string, index: number) => (
+                                    <Col span={8} key={index}>
+                                        <Image
+                                            src={`${configData.s3baseURL}${url}`}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            preview={true}
+                                        />
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Col>
+                    )}
                 </Row>
             </div>
         </Modal>
