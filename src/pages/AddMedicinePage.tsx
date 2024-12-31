@@ -132,15 +132,6 @@ const AddMedicinePage: React.FC = () => {
         }
     }
 
-    // Step 2: Handle form data changes
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
 
     // Step 3: Handle form submission
     const handleSubmit = async () => {
@@ -314,7 +305,6 @@ const AddMedicinePage: React.FC = () => {
                 setFormError={setFormError}
                 formData={formData}
                 setFormData={setFormData}
-                handleChange={handleChange}
                 handleSubmit={handleSubmit}
                 isLoading={loading}
                 isSubmitFormLoading={isSubmitFormLoading}

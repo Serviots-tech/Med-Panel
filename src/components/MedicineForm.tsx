@@ -15,7 +15,6 @@ import { Loader } from './Loader';
 
 interface MedicineFormProps {
     formData: MedicineFormInput;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
     handleSubmit: (e: React.FormEvent) => void;
     formError: any;
     setFormError: any
@@ -27,11 +26,12 @@ interface MedicineFormProps {
     setFormData: any
 }
 
-export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormData, handleChange, handleSubmit, formError, setFormError, isSubmitFormLoading, isLoading, doseFormData, fileList, setFileList }) => {
+export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormData, handleSubmit, formError, setFormError, isSubmitFormLoading, isLoading, doseFormData, fileList, setFileList }) => {
 
 
     let isRemoving = false;
     const [hasError, setHasError] = useState(false);
+    console.log("🚀 ~ hasError:", hasError)
 
     // const propsUpload = {
     //     name: 'file',
@@ -77,7 +77,7 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
         accept: '.jpg,.jpeg,.png',
         maxCount: 4,
         fileList: fileList,
-        beforeUpload: (file: any) => {
+        beforeUpload: () => {
             return false; // Prevent automatic upload
         },
         onChange(info: any) {

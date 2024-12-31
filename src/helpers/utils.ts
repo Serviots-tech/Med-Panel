@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function invalidText(value: string | number | null | undefined) {
 	return (
 		value === null ||
@@ -11,13 +12,14 @@ export function validateFormData(
 	errObj: { [key: string]: boolean }
 ): { [key: string]: boolean } {
 	Object.keys(dataObj).forEach((key) => {
-		if (Object.hasOwn(errObj, key)) {
+		if (Object.prototype.hasOwnProperty.call(errObj, key)) {
 			errObj[key] = invalidText(dataObj[key]);
 		}
 	});
 
 	return errObj;
 }
+
 
 export function hasFormError(errObj: { [key: string]: boolean }): boolean {
 	return Object.keys(errObj).some((key) => {

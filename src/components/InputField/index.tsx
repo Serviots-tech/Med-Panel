@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Input } from 'antd';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
-import React, { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { invalidText } from '../../helpers/utils';
 
 type Props = {
