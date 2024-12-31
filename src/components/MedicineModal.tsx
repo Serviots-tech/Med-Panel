@@ -11,11 +11,16 @@ const { Text } = Typography;
 interface MedicineModalProps {
     medicine: Medicine | null;
     onClose: () => void;
+    doseFormData:any
 }
 
-const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
-    console.log("🚀 ~ medicine:", medicine)
+const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose,doseFormData }) => {
     if (!medicine) return null;
+
+    const getDoseFormName = (doseFormId:string) => {
+        const matchedItem = doseFormData.find((item:any) => item.id === doseFormId);
+        return matchedItem ? matchedItem.name : "Unknown";
+      };
 
     return (
         <Modal
@@ -57,7 +62,7 @@ const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
                     </Col>
                     <Col span={8}>
                         <Text strong>Dosage Form :- </Text>
-                        <Text>{medicine.doseFormId}</Text>
+                        <Text>{getDoseFormName(medicine.doseFormId)}</Text>
                     </Col>
                 </Row>
 

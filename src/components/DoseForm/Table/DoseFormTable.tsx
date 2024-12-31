@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {  PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid';
+import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid';
 import { Button, Table } from 'antd';
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ConfirmDeleteModal from '../../buttons/ConfirmDeleteModal';
-// import { deleteDoseForm } from '../services/doseForm';
-// import './DoseFormTable.css';
-import {  deleteApiWithData } from '../../../apis';
+import { deleteApiWithData } from '../../../apis';
+import AddDoseFormModal from '../../AddDoseFormModal';
 
 interface DoseFormTableProps {
     doseForm: any[];
-    setDoseForms: React.Dispatch<React.SetStateAction<any[]>>;
     handlePageChange: (
         pagination: any,  // This is the pagination configuration object
         filters: any,  // This is for column filters
@@ -21,14 +18,15 @@ interface DoseFormTableProps {
     currentPage: number;
     totalRecords: number;
     pagesize: number;
-    isLoading:boolean
+    isLoading: boolean;
+    fetchDoseForms:()=>void
 }
 
-const DoseFormTable: React.FC<DoseFormTableProps> = ({ doseForm, isLoading, setDoseForms, handlePageChange, currentPage, totalRecords, pagesize }) => {
-    console.log("🚀 ~ doseForm:", doseForm)
+const DoseFormTable: React.FC<DoseFormTableProps> = ({ doseForm, isLoading, handlePageChange, currentPage, totalRecords, pagesize,fetchDoseForms }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAddDoseFormModalOpen, setIsAddDoseFormModalOpen] = useState(false);
     const [doseFormToDelete, setDoseFormToDelete] = useState<any>(null);
-    const navigate = useNavigate();
+    const [doseFormToEdit, setDoseFormToEdit] = useState<any>(null);
 
     const [isDeleteLoading, setIsDeleteLoading] = useState(false)
 
@@ -43,16 +41,12 @@ const DoseFormTable: React.FC<DoseFormTableProps> = ({ doseForm, isLoading, setD
         try {
             setIsDeleteLoading(true)
             if (doseFormToDelete) {
-                const isDeleted = await deleteApiWithData('/dose-form',{id:doseFormToDelete.id});
+                await deleteApiWithData('/dose-form', { id: doseFormToDelete.id });
                 toast.success("DoseForm deleted successfully");
-                if (isDeleted) {
-                    setDoseForms((prevDoseForms) =>
-                        prevDoseForms.filter((item) => item.id !== doseFormToDelete.id)
-                    );
-                }
+               fetchDoseForms()
             }
         } catch (e: any) {
-            toast.error("Fail to delete")
+            toast.error(e?.response?.data?.message ||"Fail to delete")
             console.log("🚀 ~ handleConfirmDelete ~ e:", e)
 
         } finally {
@@ -85,13 +79,13 @@ const DoseFormTable: React.FC<DoseFormTableProps> = ({ doseForm, isLoading, setD
             key: 'actions',
             render: (_: any, doseForm: any) => (
                 <div className="flex justify-center space-x-2">
-                    <Link to={`/add-doseForm/${doseForm.id}`}>
                         <Button
                             icon={<PencilIcon className="h-5 w-5" />}
                             type="link"
+                            onClick={()=>{setIsAddDoseFormModalOpen(true);setDoseFormToEdit(doseForm)}}
                         >
                         </Button>
-                    </Link><Button
+                        <Button
                         icon={<TrashIcon className="h-5 w-5" />}
                         onClick={() => handleDeleteClick(doseForm)}
                         type="link"
@@ -112,7 +106,7 @@ const DoseFormTable: React.FC<DoseFormTableProps> = ({ doseForm, isLoading, setD
                         type="primary"
                         icon={<PlusIcon className="h-5 w-5 mr-2" />}
                         onClick={() => {
-                            navigate('/add-doseForm');
+                            setIsAddDoseFormModalOpen(true)
                         }}
                     >
                         Add New DoseForm
@@ -147,7 +141,14 @@ const DoseFormTable: React.FC<DoseFormTableProps> = ({ doseForm, isLoading, setD
                 onClose={handleCancelDelete}
                 onConfirm={handleConfirmDelete}
                 isDeleteLoading={isDeleteLoading}
-                itemName={doseFormToDelete?.doseFormName || ""}
+                itemName={doseFormToDelete?.name || ""}
+            />
+
+            <AddDoseFormModal
+                isAddDoseFormModalOpen={isAddDoseFormModalOpen}
+                setIsAddDoseFormModalOpen={setIsAddDoseFormModalOpen}
+                fetchDoseForms={fetchDoseForms}
+                doseFormToEdit={doseFormToEdit}
             />
         </div>
     );

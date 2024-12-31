@@ -84,11 +84,11 @@ const DoseFormListPage: React.FC = () => {
                 <DoseFormTable
                     doseForm={doseForm}
                     isLoading={isLoading}
-                    setDoseForms={setDoseForms}
                     handlePageChange={handlePageChange}
                     currentPage={currentPage}
                     totalRecords={totalRecords}
                     pagesize={pageSize}
+                    fetchDoseForms={fetchDoseForms}
                 />
             </div>
         </div>

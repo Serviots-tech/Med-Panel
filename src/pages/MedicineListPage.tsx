@@ -1,21 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { getMedicines, deleteMedicine } from '../services/medicine';
 import { Medicine } from '../types/medicine';
 import MedicineTable from '../components/MedicineTable';
 import MedicineModal from '../components/MedicineModal';
 import { TablePaginationConfig } from 'antd';
+import { toast } from 'react-toastify';
+import { getApi } from '../apis';
 // import { FilterValue, SorterResult } from 'antd/es/table/interface';
 
 const MedicineListPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
     const [medicines, setMedicines] = useState<Medicine[]>([]);
+    const [doseFormData, setDoseFormData] = useState<any>()
+
     // const [loading, setLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setpageSize] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
-    const [isLoading,setIsLoading]=useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
 
     // Fetching the list of medicines
@@ -38,7 +43,7 @@ const MedicineListPage: React.FC = () => {
         } catch (error) {
             console.error("Error fetching medicines:", error);
         }
-        finally{
+        finally {
             setIsLoading(false)
         }
     };
@@ -60,6 +65,20 @@ const MedicineListPage: React.FC = () => {
         setIsModalOpen(false);
         setSelectedMedicine(null);
     };
+
+    useEffect(() => {
+        fetchDoseForms()
+    }, [])
+
+    const fetchDoseForms = async () => {
+        try {
+            const doseFoemData = await getApi('/dose-form/get-all')
+            setDoseFormData(doseFoemData?.data?.data?.data?.data)
+        }
+        catch (error: any) {
+            toast.error(error?.msg || "Fail to fetch dose form")
+        }
+    }
 
     // Handle deleting a medicine
     const handleDelete = async (medicine: Medicine) => {
@@ -107,6 +126,7 @@ const MedicineListPage: React.FC = () => {
                     <MedicineModal
                         medicine={selectedMedicine}
                         onClose={closeModal}
+                        doseFormData={doseFormData}
                     />
                 )}
             </div>
