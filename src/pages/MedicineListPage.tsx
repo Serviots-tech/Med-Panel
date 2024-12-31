@@ -5,7 +5,6 @@ import { Medicine } from '../types/medicine';
 import MedicineTable from '../components/MedicineTable';
 import MedicineModal from '../components/MedicineModal';
 import { TablePaginationConfig } from 'antd';
-import { toast } from 'react-toastify';
 import { getApi } from '../apis';
 // import { FilterValue, SorterResult } from 'antd/es/table/interface';
 
