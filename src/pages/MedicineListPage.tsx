@@ -76,7 +76,8 @@ const MedicineListPage: React.FC = () => {
             setDoseFormData(doseFoemData?.data?.data?.data?.data)
         }
         catch (error: any) {
-            toast.error(error?.msg || "Fail to fetch dose form")
+            console.log("🚀 ~ fetchDoseForms ~ error:", error)
+            // toast.error(error?.msg || "Fail to fetch dose form")
         }
     }
 
