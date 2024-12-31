@@ -152,7 +152,7 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
             {isLoading ? (
                 <div className="spinner">
                     {/* Replace with an actual spinner component */}
-                    <Loader/>
+                    <Loader />
                 </div>
             ) : (
                 <form className="bg-white p-6 rounded-lg shadow-md space-y-4">
@@ -174,7 +174,7 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                                     );
                                 }}
                                 // regex="^\d{10}$"
-                                isError={false}
+                                isError={formError.medicineName}
                                 disabled={false}
                             />
                         </Col>
@@ -192,18 +192,30 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                             />
                         </Col>
                         <Col span={8}>
-                            <InputField
-                                name="GenericName"
-                                value={formData?.GenericName}
-                                label="Product Type"
+                            <SelectDropdown
+                                placeholder="Select Product Type"
+                                options={[
+                                    { label: 'Drug', value: 'Drug' },
+                                    { label: 'Surgical', value: 'Surgical' },
+                                    { label: 'Cosmetic', value: 'Cosmetic' },
+                                    { label: 'Generic', value: 'Generic' },
+                                    { label: 'Homeopathic', value: 'Homeopathic' },
+                                    { label: 'Ayurvedic', value: 'Ayurvedic' },
+                                    { label: 'OTC', value: 'OTC' }
+                                ]}
+                                value={formData.productType}
+                                onChange={(value: any) => {
+                                    handleChangeValue(value, 'productType', true);
+                                }}
+                                size="large"
                                 required={true}
-                                helperText="Generic name is required"
-                                placeholder="Generic Name"
-                                onChange={(value) => handleChangeValue(value, 'GenericName', true)}
-                                isError={formError.GenericName}
+                                helperText="Product type is required"
+                                label="Product Type"
                                 disabled={false}
+                                isError={formError.productType}
                             />
                         </Col>
+
                         <Col span={8}>
                             <p className="mb-1 text-gray-700 font-semibold">
                                 Image<span className="text-red-500"> *</span>
@@ -272,10 +284,10 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                         <Col span={8}>
                             <SelectDropdown
                                 placeholder="Select Dosage Form"
-                                options={doseFormData?.map((item:any) => ({
+                                options={doseFormData?.map((item: any) => ({
                                     label: item.name,
                                     value: item.id
-                                })) }
+                                }))}
                                 value={formData.doseFormId}
                                 onChange={(value) => handleChangeValue(value, 'doseFormId', true)}
                                 size="large"

@@ -54,7 +54,7 @@ const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose,doseFor
                 <Row gutter={24}>
                     <Col span={8}>
                         <Text strong>Generic Name :- </Text>
-                        <Text>{medicine.GenericName}</Text>
+                        <Text>{medicine.productType}</Text>
                     </Col>
                     <Col span={8}>
                         <Text strong>Drug Category :- </Text>

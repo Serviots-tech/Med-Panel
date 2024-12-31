@@ -14,7 +14,7 @@ export interface Medicine {
     id: string;
     medicineName: string;
     brandName: string;
-    GenericName: string;
+    productType: string;
     drugCategory: string;
     doseFormId: string;
     strength: string;
@@ -48,7 +48,7 @@ export interface MedicineFormInput {
     id?:string;
     medicineName: string;
     brandName: string;
-    GenericName: string;
+    productType: string;
     drugCategory: string;
     doseFormId: string;
     strength: string;

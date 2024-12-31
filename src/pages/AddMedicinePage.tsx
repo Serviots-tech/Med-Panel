@@ -28,7 +28,7 @@ const AddMedicinePage: React.FC = () => {
     const [formData, setFormData] = useState<MedicineFormInput>({
         medicineName: '',
         brandName: '',
-        GenericName: '',
+        productType: '',
         drugCategory: '',
         doseFormId: '',
         strength: '',
@@ -59,7 +59,7 @@ const AddMedicinePage: React.FC = () => {
     const [formError, setFormError] = useState<any>({
         medicineName: false,
         brandName: false,
-        GenericName: false,
+        productType: false,
         drugCategory: false,
         doseFormId: false,
         strength: false,
@@ -215,7 +215,7 @@ const AddMedicinePage: React.FC = () => {
                 setFormData({
                     medicineName: '',
                     brandName: '',
-                    GenericName: '',
+                    productType: '',
                     drugCategory: '',
                     doseFormId: '',
                     strength: '',
