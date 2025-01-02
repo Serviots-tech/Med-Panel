@@ -2,7 +2,6 @@
 export type DrugCategory = 'Antibiotic' | 'Painkiller' | 'Vitamin' | 'Antifungal' | 'Antiviral' | 'Select';
 
 // Enum for Dosage Form, matching Prisma's schema
-export type DosageForm = 'Tablet' | 'Capsule' | 'Liquid' | 'Ointment' | 'Injection' | 'Select';
 type Float = number;
 
 export type PrescriptionReq = "YES" | "NO" | "Select";
@@ -15,9 +14,9 @@ export interface Medicine {
     id: string;
     medicineName: string;
     brandName: string;
-    GenericName: string;
-    drugCategory: DrugCategory;
-    dosageForm: DosageForm;
+    productType: string;
+    drugCategory: string;
+    doseFormId: string;
     strength: string;
     manufacturer: string;
     packSize: string;
@@ -29,8 +28,8 @@ export interface Medicine {
     contraindications: string;
     storageConditions: string;
     shelfLife: string;
-    prescriptionReq: PrescriptionReq;
-    approvalInfo: ApprovalInfo;
+    prescriptionReq: string;
+    approvalInfo: string;
     barcodeSKU: string; // unique
     batchNumber: string;
     interactions: string;
@@ -38,7 +37,10 @@ export interface Medicine {
     ndc: string;
     distributor: string;
     specialConsiderations: string;
-    expiryDate: Date | null;
+    image?:string;
+    scheduleType:string;
+    gstPercentage:number
+    // expiryDate: Date | null;
 }
 
 // Type for Medicine form input, used when creating or updating a medicine
@@ -46,9 +48,9 @@ export interface MedicineFormInput {
     id?:string;
     medicineName: string;
     brandName: string;
-    GenericName: string;
-    drugCategory: DrugCategory;
-    dosageForm: DosageForm;
+    productType: string;
+    drugCategory: string;
+    doseFormId: string;
     strength: string;
     manufacturer: string;
     packSize: string;
@@ -60,8 +62,8 @@ export interface MedicineFormInput {
     contraindications: string;
     storageConditions: string;
     shelfLife: string;
-    prescriptionReq: PrescriptionReq;
-    approvalInfo: ApprovalInfo;
+    prescriptionReq: string;
+    approvalInfo: string;
     barcodeSKU: string;
     batchNumber: string;
     interactions: string;
@@ -69,5 +71,9 @@ export interface MedicineFormInput {
     ndc: string;
     distributor: string;
     specialConsiderations: string;
-    expiryDate: Date | null;
+    image?:string;
+    scheduleType:string;
+    gstPercentage:number
+
+    // expiryDate: Date | null;
 }

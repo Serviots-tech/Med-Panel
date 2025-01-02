@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import { MedicineFormInput } from '../types/medicine';
 import { configData } from '../helpers/config';
 
 // Set base URL for API
@@ -31,7 +30,7 @@ export const getMedicines = async (query: any) => {
 // Get a single medicine by ID
 export const getMedicineById = async (id: string) => {
     try {
-        const response = await axios.get(`${API_URL}/${id}`);
+        const response = await axios.get(`${API_URL}/medicines/${id}`);
         return response.data;
     } catch (error) {
         // Log the error and handle appropriately
@@ -41,9 +40,13 @@ export const getMedicineById = async (id: string) => {
 };
 
 // Create a new medicine
-export const createMedicine = async (medicineData: MedicineFormInput) => {
+export const createMedicine = async (medicineData: any) => {
     try {
-        const response = await axios.post(`${API_URL}/add`, medicineData);
+        const response = await axios.post(`${API_URL}/medicines/add`, medicineData,{
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     } catch (error: any) {
         // Log the full error to see more details from the server
@@ -53,9 +56,13 @@ export const createMedicine = async (medicineData: MedicineFormInput) => {
 };
 
 // Update an existing medicine
-export const updateMedicine = async (id: string, medicineData: MedicineFormInput) => {
+export const updateMedicine = async (id: string, medicineData: any) => {
     try {
-        const response = await axios.put(`${API_URL}/${id}`, medicineData);
+        const response = await axios.put(`${API_URL}/medicines/${id}`, medicineData,{
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         console.log('Medicine updated successfully', response.data);
         return response.data;
     } catch (error) {
@@ -67,7 +74,7 @@ export const updateMedicine = async (id: string, medicineData: MedicineFormInput
 // Delete a medicine
 export const deleteMedicine = async (id: string): Promise<boolean> => {
     try {
-        const response = await axios.delete(`${API_URL}/${id}`);
+        const response = await axios.delete(`${API_URL}/medicines/${id}`);
         if (response.status === 200) {
             return true;
         }

@@ -1,448 +1,664 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
+import React, { useState } from 'react';
 import { MedicineFormInput } from '../types/medicine';
+import { Button, Col, Row, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { toast } from 'react-toastify';
+import InputField from './InputField';
+import { invalidText, validateFormData } from '../helpers/utils';
+import SelectDropdown from './SelectDropdown';
+import { Image } from 'antd';
+import { configData } from '../helpers/config';
+import { countries } from "countries-list";
+import { Loader } from './Loader';
 
 interface MedicineFormProps {
     formData: MedicineFormInput;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
     handleSubmit: (e: React.FormEvent) => void;
-    errors: any;
+    formError: any;
+    setFormError: any
+    isSubmitFormLoading: boolean;
+    isLoading: boolean;
+    doseFormData: any;
+    fileList: any;
+    setFileList: any;
+    setFormData: any
 }
 
-const MedicineForm: React.FC<MedicineFormProps> = ({ formData, handleChange, handleSubmit, errors }) => {
+export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormData, handleSubmit, formError, setFormError, isSubmitFormLoading, isLoading, doseFormData, fileList, setFileList }) => {
 
+
+    let isRemoving = false;
+    const [hasError, setHasError] = useState(false);
+    console.log("🚀 ~ hasError:", hasError)
+
+    // const propsUpload = {
+    //     name: 'file',
+    //     accept: '.jpg,.jpeg,.png',
+    //     maxCount: 4,
+    //     fileList: fileList,
+    //     beforeUpload: (file: any) => {
+    //         return false; // Prevent automatic upload
+    //     },
+    //     onChange(info: any) {
+    //         const { file, fileList: newFileList } = info;
+
+    //         if (file?.size) {
+    //             const isLt1M = file.size / 1024 / 1024 < 1;
+    //             if (!isLt1M) {
+    //                 toast.error('Image must be smaller than 1MB!');
+    //                 return;
+    //             }
+    //         }
+
+    //         if (!isRemoving) {
+    //             // Filter valid files and limit the total count
+    //             const updatedFileList = newFileList.slice(-4).filter((file: any) => file.size / 1024 / 1024 < 1);
+    //             setFileList(updatedFileList);
+    //         } else {
+    //             isRemoving = false;
+    //         }
+    //     },
+    //     onDrop: () => {
+    //         setFile(null);
+    //         setFileList([]);
+    //     },
+    //     onRemove: (file: any) => {
+    //         isRemoving = true;
+    //         setFileList((prevList: any[]) => prevList.filter((item) => item.uid !== file.uid));
+    //     },
+    // };
+
+
+
+    const propsUpload = {
+        name: 'file',
+        accept: '.jpg,.jpeg,.png',
+        maxCount: 4,
+        fileList: fileList,
+        beforeUpload: () => {
+            return false; // Prevent automatic upload
+        },
+        onChange(info: any) {
+            const { file, fileList: newFileList } = info;
+
+            if (file?.size) {
+                const isLt1M = file.size / 1024 / 1024 < 1;
+                if (!isLt1M) {
+                    toast.error('Image must be smaller than 1MB!');
+                    return;
+                }
+            }
+
+            if (!isRemoving) {
+                // Filter valid files and limit the total count
+                const updatedFileList = newFileList.slice(-4).filter((file: any) => file.size / 1024 / 1024 < 1);
+                setFileList(updatedFileList);
+            } else {
+                // setIsRemoving(false);
+                isRemoving = false
+            }
+        },
+        onDrop: () => {
+            setFileList([]);
+        },
+        onRemove: (file: any) => {
+            // setIsRemoving(true);
+            isRemoving = true
+            setFileList((prevList: any[]) => prevList.filter((item) => item.uid !== file.uid));
+        },
+    };
+    const handleChangeValue = (
+        value: string | number | null | string[] | boolean,
+        name: string,
+        required: boolean,
+        regex?: RegExp | null
+    ) => {
+        if (required && typeof value === 'string') {
+            setHasError(invalidText(value));
+        }
+        if (required && Array.isArray(value) && value.length === 0) {
+            setHasError(true);
+        }
+
+        if (typeof value === 'string' && regex) {
+            const _regex = new RegExp(regex);
+            setHasError(!_regex.test(value));
+        }
+
+        OnChange(value, name);
+        // console.log("value",value)
+    };
+
+    const OnChange = (
+        value: string | number | null | string[] | boolean,
+        key: string,
+    ) => {
+        setFormData((prev: any) => {
+            return {
+                ...prev,
+                [key]: value,
+            };
+        });
+        const checkFormError = validateFormData(
+            { [key]: value },
+            { ...formError }
+        );
+        setFormError(checkFormError);
+    };
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
-                {/* Medicine Name */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="medicineName"
-                        value={formData.medicineName}
-                        onChange={handleChange}
-                        placeholder="Medicine Name"
-                        className={`border p-2 w-full rounded-md ${errors.medicineName ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.medicineName && (
-                        <p className="text-red-500 text-xs mt-1">{errors.medicineName}</p>
-                    )}
+        <div>
+            {isLoading ? (
+                <div className="spinner">
+                    {/* Replace with an actual spinner component */}
+                    <Loader />
                 </div>
+            ) : (
+                <form className="bg-white p-6 rounded-lg shadow-md space-y-4">
 
-                {/* Brand Name */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="brandName"
-                        value={formData.brandName}
-                        onChange={handleChange}
-                        placeholder="Brand Name"
-                        className={`border p-2 w-full rounded-md ${errors.brandName ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.brandName && (
-                        <p className="text-red-500 text-xs mt-1">{errors.brandName}</p>
-                    )}
-                </div>
+                    <Row gutter={[50, 20]} >
+                        <Col span={8}>
+                            <InputField
+                                name="medicineName"
+                                value={formData?.medicineName}
+                                label="Medicine Name"
+                                required={true}
+                                helperText="Medicine name is required"
+                                placeholder='Medicine Name'
+                                onChange={(value) => {
+                                    handleChangeValue(
+                                        value,
+                                        'medicineName',
+                                        true
+                                    );
+                                }}
+                                // regex="^\d{10}$"
+                                isError={formError.medicineName}
+                                disabled={false}
+                            />
+                        </Col>
+                        <Col span={8}>
+                            <InputField
+                                name="brandName"
+                                value={formData?.brandName}
+                                label="Brand Name"
+                                required={true}
+                                helperText="Brand name is required"
+                                placeholder="Brand Name"
+                                onChange={(value) => handleChangeValue(value, 'brandName', true)}
+                                isError={formError.brandName}
+                                disabled={false}
+                            />
+                        </Col>
+                        <Col span={8}>
+                            <SelectDropdown
+                                placeholder="Select Product Type"
+                                options={[
+                                    { label: 'Drug', value: 'Drug' },
+                                    { label: 'Surgical', value: 'Surgical' },
+                                    { label: 'Cosmetic', value: 'Cosmetic' },
+                                    { label: 'Generic', value: 'Generic' },
+                                    { label: 'Homeopathic', value: 'Homeopathic' },
+                                    { label: 'Ayurvedic', value: 'Ayurvedic' },
+                                    { label: 'OTC', value: 'OTC' }
+                                ]}
+                                value={formData.productType}
+                                onChange={(value: any) => {
+                                    handleChangeValue(value, 'productType', true);
+                                }}
+                                size="large"
+                                required={true}
+                                helperText="Product type is required"
+                                label="Product Type"
+                                disabled={false}
+                                isError={formError.productType}
+                            />
+                        </Col>
 
-                {/* Medicine Name */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="GenericName"
-                        value={formData.GenericName}
-                        onChange={handleChange}
-                        placeholder="Generic Name"
-                        className={`border p-2 w-full rounded-md ${errors.GenericName ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.GenericName && (
-                        <p className="text-red-500 text-xs mt-1">{errors.GenericName}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <p className="mb-1 text-gray-700 font-semibold">
+                                Image<span className="text-red-500"> *</span>
+                            </p>
+                            <Upload {...propsUpload}>
+                                <Button icon={<UploadOutlined />}>Upload</Button>
+                            </Upload>
 
-                {/* Strength */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="strength"
-                        value={formData.strength}
-                        onChange={handleChange}
-                        placeholder="Strength"
-                        className={`border p-2 w-full rounded-md ${errors.strength ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.strength && (
-                        <p className="text-red-500 text-xs mt-1">{errors.strength}</p>
-                    )}
-                </div>
+                            {(Array.isArray(formData?.image) && !fileList.length) && (
+                                <Row gutter={[16, 16]} justify="start" className='mt-10'>
+                                    {formData.image.map((url: string, index: number) => (
+                                        <Col span={6} key={index}>
+                                            <Image
+                                                src={`${configData?.s3baseURL || ''}${url}`} // Fallback for s3baseURL
+                                                style={{
+                                                    width: '100%', // Adjust width to fit the column
+                                                    height: 'auto', // Maintain aspect ratio
+                                                    objectFit: 'cover',
+                                                }}
+                                                preview={true}
+                                            />
+                                        </Col>
+                                    ))}
+                                </Row>
+                            )}
 
-                {/* Drug Category */}
-                <div className="col-span-1">
-                    <select
-                        name="drugCategory"
-                        value={formData.drugCategory}
-                        onChange={handleChange}
-                        className={`border p-2 w-full rounded-md ${errors.drugCategory ? 'border-red-500' : ''}`}
-                        required
-                    >
-                        <option value="Select">Select</option>
-                        <option value="Antibiotic">Antibiotic</option>
-                        <option value="Painkiller">Painkiller</option>
-                        <option value="Vitamin">Vitamin</option>
-                        <option value="Antifungal">Antifungal</option>
-                        <option value="Antiviral">Antiviral</option>
-                    </select>
-                    {errors.drugCategory && (
-                        <p className="text-red-500 text-xs mt-1">{errors.drugCategory}</p>
-                    )}
-                </div>
+                        </Col>
 
-                {/* Dosage Form */}
-                <div className="col-span-1">
-                    <select
-                        name="dosageForm"
-                        value={formData.dosageForm}
-                        onChange={handleChange}
-                        className={`border p-2 w-full rounded-md ${errors.dosageForm ? 'border-red-500' : ''}`}
-                        required
-                    >
-                        <option value="Select">Select</option>
-                        <option value="Tablet">Tablet</option>
-                        <option value="Capsule">Capsule</option>
-                        <option value="Liquid">Liquid</option>
-                        <option value="Ointment">Ointment</option>
-                        <option value="Injection">Injection</option>
-                    </select>
-                    {errors.dosageForm && (
-                        <p className="text-red-500 text-xs mt-1">{errors.dosageForm}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <InputField
+                                name="strength"
+                                value={formData?.strength}
+                                label="Strength"
+                                required={true}
+                                helperText="Strength is required"
+                                placeholder="Strength"
+                                onChange={(value) => handleChangeValue(value, 'strength', true)}
+                                isError={formError.strength}
+                                disabled={false}
+                            />
+                        </Col>
+                        <Col span={8}>
+                            <SelectDropdown
+                                placeholder="Select Drug Category"
+                                options={[
+                                    { label: 'Antibiotic', value: 'Antibiotic' },
+                                    { label: 'Painkiller', value: 'Painkiller' },
+                                    { label: 'Vitamin', value: 'Vitamin' },
+                                    { label: 'Antifungal', value: 'Antifungal' },
+                                    { label: 'Antiviral', value: 'Antiviral' }
+                                ]}
+                                value={formData.drugCategory}
+                                onChange={(value: any) => {
+                                    handleChangeValue(value, 'drugCategory', true);
+                                }}
+                                size="large"
+                                required={true}
+                                helperText="Drug category is required"
+                                label="Drug Category"
+                                disabled={false}
+                                isError={formError.drugCategory}
+                            />
+                        </Col>
 
-                {/* Manufacturer */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="manufacturer"
-                        value={formData.manufacturer}
-                        onChange={handleChange}
-                        placeholder="Manufacturer"
-                        className={`border p-2 w-full rounded-md ${errors.manufacturer ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.manufacturer && (
-                        <p className="text-red-500 text-xs mt-1">{errors.manufacturer}</p>
-                    )}
-                </div>
+                        {/* Dosage Form */}
+                        <Col span={8}>
+                            <SelectDropdown
+                                placeholder="Select Dosage Form"
+                                options={doseFormData?.map((item: any) => ({
+                                    label: item.name,
+                                    value: item.id
+                                }))}
+                                value={formData.doseFormId}
+                                onChange={(value) => handleChangeValue(value, 'doseFormId', true)}
+                                size="large"
+                                required={true}
+                                helperText="Dosage form is required"
+                                label="Dosage Form"
+                                disabled={false}
+                                isError={formError.doseFormId}
+                            />
+                        </Col>
 
-                {/* Pack Size */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="packSize"
-                        value={formData.packSize}
-                        onChange={handleChange}
-                        placeholder="Pack Size"
-                        className={`border p-2 w-full rounded-md ${errors.packSize ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.packSize && (
-                        <p className="text-red-500 text-xs mt-1">{errors.packSize}</p>
-                    )}
-                </div>
+                        {/* Manufacturer */}
+                        <Col span={8}>
+                            <InputField
+                                name="manufacturer"
+                                value={formData.manufacturer}
+                                label="Manufacturer"
+                                required={true}
+                                helperText="Manufacturer is required"
+                                placeholder="Manufacturer"
+                                onChange={(value) => handleChangeValue(value, 'manufacturer', true)}
+                                isError={formError.manufacturer}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Price */}
-                <div className="col-span-1">
-                    <input
-                        type="number"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                        placeholder="Price"
-                        step="0.01"
-                        className={`border p-2 w-full rounded-md ${errors.price ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.price && (
-                        <p className="text-red-500 text-xs mt-1">{errors.price}</p>
-                    )}
-                </div>
+                        {/* Pack Size */}
+                        <Col span={8}>
+                            <InputField
+                                name="packSize"
+                                value={formData.packSize}
+                                label="Pack Size"
+                                required={true}
+                                helperText="Pack size is required"
+                                placeholder="Pack Size"
+                                onChange={(value) => handleChangeValue(value, 'packSize', true)}
+                                isError={formError.packSize}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Route of Administration */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="routeOfAdministration"
-                        value={formData.routeOfAdministration}
-                        onChange={handleChange}
-                        placeholder="Route of Administration"
-                        className={`border p-2 w-full rounded-md ${errors.routeOfAdministration ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.routeOfAdministration && (
-                        <p className="text-red-500 text-xs mt-1">{errors.routeOfAdministration}</p>
-                    )}
-                </div>
+                        {/* Price */}
+                        <Col span={8}>
+                            <InputField
+                                name="price"
+                                value={formData.price}
+                                label="Price"
+                                required={true}
+                                helperText="Price is required"
+                                placeholder="Price"
+                                type="number"
+                                onChange={(value) => handleChangeValue(value, 'price', true)}
+                                isError={formError.price}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Route of Administration */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="TherapeuticClass"
-                        value={formData.TherapeuticClass}
-                        onChange={handleChange}
-                        placeholder="Therapeutic Class"
-                        className={`border p-2 w-full rounded-md ${errors.TherapeuticClass ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.TherapeuticClass && (
-                        <p className="text-red-500 text-xs mt-1">{errors.TherapeuticClass}</p>
-                    )}
-                </div>
+                        {/* Route of Administration */}
+                        <Col span={8}>
+                            <InputField
+                                name="routeOfAdministration"
+                                value={formData.routeOfAdministration}
+                                label="Route of Administration"
+                                required={true}
+                                helperText="Route of administration is required"
+                                placeholder="Route of Administration"
+                                onChange={(value) => handleChangeValue(value, 'routeOfAdministration', true)}
+                                isError={formError.routeOfAdministration}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Indications */}
-                <div className="col-span-1">
-                    <textarea
-                        rows={1}
-                        name="indications"
-                        value={formData.indications}
-                        onChange={handleChange}
-                        placeholder="Indications"
-                        className={`border p-2 w-full rounded-md ${errors.indications ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.indications && (
-                        <p className="text-red-500 text-xs mt-1">{errors.indications}</p>
-                    )}
-                </div>
+                        {/* Therapeutic Class */}
+                        <Col span={8}>
+                            <InputField
+                                name="TherapeuticClass"
+                                value={formData.TherapeuticClass}
+                                label="Therapeutic Class"
+                                required={true}
+                                helperText="Therapeutic class is required"
+                                placeholder="Therapeutic Class"
+                                onChange={(value) => handleChangeValue(value, 'TherapeuticClass', true)}
+                                isError={formError.TherapeuticClass}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Side Effects */}
-                <div className="col-span-1">
-                    <textarea
-                        rows={1}
-                        name="sideEffects"
-                        value={formData.sideEffects}
-                        onChange={handleChange}
-                        placeholder="Side Effects"
-                        className={`border p-2 w-full rounded-md ${errors.sideEffects ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.sideEffects && (
-                        <p className="text-red-500 text-xs mt-1">{errors.sideEffects}</p>
-                    )}
-                </div>
+                        {/* Indications */}
+                        <Col span={8}>
+                            <InputField
+                                name="indications"
+                                value={formData.indications}
+                                label="Indications"
+                                required={true}
+                                helperText="Indications are required"
+                                placeholder="Indications"
+                                onChange={(value) => handleChangeValue(value, 'indications', true)}
+                                isError={formError.indications}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Contraindications */}
-                <div className="col-span-1">
-                    <textarea
-                        rows={1}
-                        name="contraindications"
-                        value={formData.contraindications}
-                        onChange={handleChange}
-                        placeholder="Contraindications"
-                        className={`border p-2 w-full rounded-md ${errors.contraindications ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.contraindications && (
-                        <p className="text-red-500 text-xs mt-1">{errors.contraindications}</p>
-                    )}
-                </div>
+                        {/* Side Effects */}
+                        <Col span={8}>
+                            <InputField
+                                name="sideEffects"
+                                value={formData.sideEffects}
+                                label="Side Effects"
+                                required={true}
+                                helperText="Side effects are required"
+                                placeholder="Side Effects"
+                                onChange={(value) => handleChangeValue(value, 'sideEffects', true)}
+                                isError={formError.sideEffects}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Storage Conditions */}
-                <div className="col-span-1">
-                    <textarea
-                        rows={1}
-                        name="storageConditions"
-                        value={formData.storageConditions}
-                        onChange={handleChange}
-                        placeholder="Storage Conditions"
-                        className={`border p-2 w-full rounded-md ${errors.storageConditions ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.storageConditions && (
-                        <p className="text-red-500 text-xs mt-1">{errors.storageConditions}</p>
-                    )}
-                </div>
+                        {/* Contraindications */}
+                        <Col span={8}>
+                            <InputField
+                                name="contraindications"
+                                value={formData.contraindications}
+                                label="Contraindications"
+                                required={true}
+                                helperText="Contraindications are required"
+                                placeholder="Contraindications"
+                                onChange={(value) => handleChangeValue(value, 'contraindications', true)}
+                                isError={formError.contraindications}
+                                disabled={false}
+                            />
+                        </Col>
+                        <Col span={8}>
+                            <InputField
+                                name="storageConditions"
+                                value={formData.storageConditions}
+                                label="Storage Conditions"
+                                required={true}
+                                helperText={formError.storageConditions ? "Storage Conditions is required" : ""}
+                                placeholder="Storage Conditions"
+                                onChange={(value) => handleChangeValue(value, 'storageConditions', true)}
+                                isError={!!formError.storageConditions}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Shelf Life */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="shelfLife"
-                        value={formData.shelfLife}
-                        onChange={handleChange}
-                        placeholder="Shelf Life"
-                        className={`border p-2 w-full rounded-md ${errors.shelfLife ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.shelfLife && (
-                        <p className="text-red-500 text-xs mt-1">{errors.shelfLife}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <InputField
+                                name="shelfLife"
+                                value={formData.shelfLife}
+                                label="Shelf Life"
+                                required={true}
+                                helperText={formError.shelfLife ? "Shelf Life is required" : ""}
+                                placeholder="Shelf Life"
+                                onChange={(value) => handleChangeValue(value, 'shelfLife', true)}
+                                isError={!!formError.shelfLife}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Prescription Required */}
-                <div className="col-span-1">
-                    <select
-                        name="prescriptionReq"
-                        value={formData.prescriptionReq}
-                        onChange={handleChange}
-                        className={`border p-2 w-full rounded-md ${errors.prescriptionReq ? 'border-red-500' : ''}`}
-                        required
-                    >
-                        <option value="Select">Select</option>
-                        <option value="YES">YES</option>
-                        <option value="NO">NO</option>
-                    </select>
-                    {errors.prescriptionReq && (
-                        <p className="text-red-500 text-xs mt-1">{errors.prescriptionReq}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <SelectDropdown
+                                placeholder="Select Prescription Required"
+                                options={[
+                                    { label: 'Select', value: 'Select' },
+                                    { label: 'YES', value: 'YES' },
+                                    { label: 'NO', value: 'NO' }
+                                ]}
+                                value={formData.prescriptionReq}
+                                onChange={(value) => handleChangeValue(value, 'prescriptionReq', true)}
+                                size="large"
+                                required={true}
+                                helperText={formError.prescriptionReq ? "Prescription Required is required" : ""}
+                                label="Prescription Required"
+                                disabled={false}
+                                isError={!!formError.prescriptionReq}
+                            />
+                        </Col>
 
-                {/* Approval Info */}
-                <div className="col-span-1">
-                    <select
-                        name="approvalInfo"
-                        value={formData.approvalInfo}
-                        onChange={handleChange}
-                        className={`border p-2 w-full rounded-md ${errors.approvalInfo ? 'border-red-500' : ''}`}
-                        required
-                    >
-                        <option value="Select">Select</option>
-                        <option value="FDA">FDA</option>
-                        <option value="EMA">EMA</option>
-                    </select>
-                    {errors.approvalInfo && (
-                        <p className="text-red-500 text-xs mt-1">{errors.approvalInfo}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <SelectDropdown
+                                placeholder="Select Approval Info"
+                                options={[
+                                    { label: 'Select', value: 'Select' },
+                                    { label: 'FDA', value: 'FDA' },
+                                    { label: 'EMA', value: 'EMA' }
+                                ]}
+                                value={formData.approvalInfo}
+                                onChange={(value) => handleChangeValue(value, 'approvalInfo', true)}
+                                size="large"
+                                required={true}
+                                helperText={formError.approvalInfo ? "Approval Info is required" : ""}
+                                label="Approval Info"
+                                disabled={false}
+                                isError={!!formError.approvalInfo}
+                            />
+                        </Col>
 
-                {/* Barcode SKU */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="barcodeSKU"
-                        value={formData.barcodeSKU || ''}
-                        onChange={handleChange}
-                        placeholder="Barcode SKU (Unique)"
-                        className={`border p-2 w-full rounded-md ${errors.barcodeSKU ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.barcodeSKU && (
-                        <p className="text-red-500 text-xs mt-1">{errors.barcodeSKU}</p>
-                    )}
-                </div>
 
-                {/* Batch Number */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="batchNumber"
-                        value={formData.batchNumber}
-                        onChange={handleChange}
-                        placeholder="Batch Number"
-                        className={`border p-2 w-full rounded-md ${errors.batchNumber ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.batchNumber && (
-                        <p className="text-red-500 text-xs mt-1">{errors.batchNumber}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <InputField
+                                name="barcodeSKU"
+                                value={formData.barcodeSKU || ''}
+                                label="Barcode SKU (Unique) or GST In"
+                                required={true}
+                                helperText={formError.barcodeSKU ? "Barcode SKU is required" : ""}
+                                placeholder="Barcode SKU (Unique)"
+                                onChange={(value) => handleChangeValue(value, 'barcodeSKU', true)}
+                                isError={!!formError.barcodeSKU}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Drug Interactions */}
-                <div className="col-span-1">
-                    <textarea
-                        rows={1}
-                        name="interactions"
-                        value={formData.interactions}
-                        onChange={handleChange}
-                        placeholder="Drug Interactions"
-                        className={`border p-2 w-full rounded-md ${errors.interactions ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.interactions && (
-                        <p className="text-red-500 text-xs mt-1">{errors.interactions}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <InputField
+                                name="batchNumber"
+                                value={formData.batchNumber}
+                                label="Batch Number"
+                                required={true}
+                                helperText={formError.batchNumber ? "Batch Number is required" : ""}
+                                placeholder="Batch Number"
+                                onChange={(value) => handleChangeValue(value, 'batchNumber', true)}
+                                isError={!!formError.batchNumber}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Country of Origin */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="countryOfOrigin"
-                        value={formData.countryOfOrigin}
-                        onChange={handleChange}
-                        placeholder="Country of Origin"
-                        className={`border p-2 w-full rounded-md ${errors.countryOfOrigin ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.countryOfOrigin && (
-                        <p className="text-red-500 text-xs mt-1">{errors.countryOfOrigin}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <InputField
+                                name="interactions"
+                                value={formData.interactions}
+                                label="Drug Interactions"
+                                required={true}
+                                helperText={formError.interactions ? "Drug Interactions are required" : ""}
+                                placeholder="Drug Interactions"
+                                onChange={(value) => handleChangeValue(value, 'interactions', true)}
+                                isError={!!formError.interactions}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* NDC */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="ndc"
-                        value={formData.ndc}
-                        onChange={handleChange}
-                        placeholder="NDC"
-                        className={`border p-2 w-full rounded-md ${errors.ndc ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.ndc && (
-                        <p className="text-red-500 text-xs mt-1">{errors.ndc}</p>
-                    )}
-                </div>
+                        {/* <Col span={8}>
+                            <InputField
+                                name="countryOfOrigin"
+                                value={formData.countryOfOrigin}
+                                label="Country of Origin"
+                                required={true}
+                                helperText={formError.countryOfOrigin ? "Country of Origin is required" : ""}
+                                placeholder="Country of Origin"
+                                onChange={(value) => handleChangeValue(value, 'countryOfOrigin', true)}
+                                isError={!!formError.countryOfOrigin}
+                                disabled={false}
+                            />
+                        </Col> */}
 
-                {/* Distributor */}
-                <div className="col-span-1">
-                    <input
-                        type="text"
-                        name="distributor"
-                        value={formData.distributor}
-                        onChange={handleChange}
-                        placeholder="Distributor"
-                        className={`border p-2 w-full rounded-md ${errors.distributor ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.distributor && (
-                        <p className="text-red-500 text-xs mt-1">{errors.distributor}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <SelectDropdown
+                                placeholder="Select Country"
+                                options={[
+                                    { label: 'Select', value: 'Select' },
+                                    ...Object.keys(countries).map(countryCode => ({
+                                        label: `${countryCode} - ${(countries as any)[countryCode].name}`,
+                                        value: countryCode,
+                                    })),
+                                ]}
+                                value={formData.countryOfOrigin}
+                                onChange={(value) => handleChangeValue(value, 'countryOfOrigin', true)}
+                                size="large"
+                                required={true}
+                                helperText={formError.countryOfOrigin ? "country of origin is required" : ""}
+                                label="country Of Origin"
+                                disabled={false}
+                                isError={!!formError.countryOfOrigin}
+                            />
+                        </Col>
 
-                {/* Special Considerations */}
-                <div className="col-span-1">
-                    <textarea
-                        rows={1}
-                        name="specialConsiderations"
-                        value={formData.specialConsiderations}
-                        onChange={handleChange}
-                        placeholder="Special Considerations"
-                        className={`border p-2 w-full rounded-md ${errors.specialConsiderations ? 'border-red-500' : ''}`}
-                        required
-                    />
-                    {errors.specialConsiderations && (
-                        <p className="text-red-500 text-xs mt-1">{errors.specialConsiderations}</p>
-                    )}
-                </div>
+                        <Col span={8}>
+                            <InputField
+                                name="ndc"
+                                value={formData.ndc}
+                                label="NDC"
+                                required={true}
+                                helperText={formError.ndc ? "NDC is required" : ""}
+                                placeholder="NDC"
+                                onChange={(value) => handleChangeValue(value, 'ndc', true)}
+                                isError={!!formError.ndc}
+                                disabled={false}
+                            />
+                        </Col>
 
-                {/* Submit Button */}
-                <div className="col-span-1">
-                    <button
-                        type="submit"
-                        className="bg-blue-500 text-white p-2 rounded-md w-full hover:bg-blue-600"
-                    >
-                        {formData.id ? 'Update' : 'Add'} Medicine
-                    </button>
-                </div>
+                        <Col span={8}>
+                            <InputField
+                                name="distributor"
+                                value={formData.distributor}
+                                label="Distributor"
+                                required={true}
+                                helperText={formError.distributor ? "Distributor is required" : ""}
+                                placeholder="Distributor"
+                                onChange={(value) => handleChangeValue(value, 'distributor', true)}
+                                isError={!!formError.distributor}
+                                disabled={false}
+                            />
+                        </Col>
 
-            </div>
-        </form>
+                        <Col span={8}>
+                            <InputField
+                                name="specialConsiderations"
+                                value={formData.specialConsiderations}
+                                label="Special Considerations"
+                                required={true}
+                                helperText={formError.specialConsiderations ? "Special Considerations are required" : ""}
+                                placeholder="Special Considerations"
+                                onChange={(value) => handleChangeValue(value, 'specialConsiderations', true)}
+                                isError={!!formError.specialConsiderations}
+                                disabled={false}
+                            />
+                        </Col>
+
+                        <Col span={8}>
+                            <InputField
+                                name="scheduleType"
+                                value={formData.scheduleType}
+                                label="Schedule Type"
+                                required={true}
+                                helperText={formError.scheduleType ? "Schedule Type is required" : ""}
+                                placeholder="Enter Schedule Type (e.g., Daily, Weekly, Monthly)"
+                                onChange={(value) => handleChangeValue(value, 'scheduleType', true)}
+                                isError={!!formError.scheduleType}
+                                disabled={false}
+                            />
+                        </Col>
+                        <Col span={8}>
+                            <SelectDropdown
+                                placeholder="Select GST Percentage"
+                                options={Array.from({ length: 29 }, (_, index) => ({
+                                    label: `${index}%`,
+                                    value: index
+                                }))}
+                                value={String(formData.gstPercentage)}
+                                onChange={(value) => {
+                                    handleChangeValue(value, 'gstPercentage', true);
+                                }}
+                                size="large"
+                                required={true}
+                                helperText="GST percentage is required"
+                                label="GST Percentage"
+                                disabled={false}
+                                isError={formError.gstPercentage}
+                            />
+                        </Col>
+
+
+
+                    </Row>
+
+
+                    {/* </div> */}
+                    <div className="flex justify-center">
+                        <Button
+                            // htmlType="submit"
+                            type='primary'
+                            onClick={handleSubmit}
+                            loading={isSubmitFormLoading}
+                        // className="bg-blue-500 text-white p-2 rounded-md w-full max-w-xs hover:bg-blue-600"
+                        >
+                            {formData.id ? 'Update' : 'Add'} Medicine
+                        </Button>
+                    </div>
+                </form>
+            )
+            };
+        </div>
     );
-};
 
-export default MedicineForm;
+}

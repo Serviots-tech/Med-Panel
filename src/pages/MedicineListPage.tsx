@@ -1,26 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { getMedicines, deleteMedicine } from '../services/medicine';
 import { Medicine } from '../types/medicine';
 import MedicineTable from '../components/MedicineTable';
 import MedicineModal from '../components/MedicineModal';
 import { TablePaginationConfig } from 'antd';
+import { getApi } from '../apis';
 // import { FilterValue, SorterResult } from 'antd/es/table/interface';
 
 const MedicineListPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
     const [medicines, setMedicines] = useState<Medicine[]>([]);
+    const [doseFormData, setDoseFormData] = useState<any>()
+
     // const [loading, setLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setpageSize] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
+    const [isLoading, setIsLoading] = useState(false)
 
 
     // Fetching the list of medicines
     const fetchMedicines = async () => {
         try {
-
+            setIsLoading(true)
             const query = {
                 currentPage,
                 pageSize
@@ -31,12 +36,14 @@ const MedicineListPage: React.FC = () => {
                 setMedicines(response.data);
                 setCurrentPage(response?.pagination?.page)
                 setTotalRecords(response?.pagination?.totalRecords)
-                console.log("Fetched medicines:", response.pagination);
             } else {
                 console.error('API response does not contain a valid medicines array:', response);
             }
         } catch (error) {
             console.error("Error fetching medicines:", error);
+        }
+        finally {
+            setIsLoading(false)
         }
     };
 
@@ -57,6 +64,21 @@ const MedicineListPage: React.FC = () => {
         setIsModalOpen(false);
         setSelectedMedicine(null);
     };
+
+    useEffect(() => {
+        fetchDoseForms()
+    }, [])
+
+    const fetchDoseForms = async () => {
+        try {
+            const doseFoemData = await getApi('/dose-form/get-all')
+            setDoseFormData(doseFoemData?.data?.data?.data?.data)
+        }
+        catch (error: any) {
+            console.log("🚀 ~ fetchDoseForms ~ error:", error)
+            // toast.error(error?.msg || "Fail to fetch dose form")
+        }
+    }
 
     // Handle deleting a medicine
     const handleDelete = async (medicine: Medicine) => {
@@ -81,13 +103,14 @@ const MedicineListPage: React.FC = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-5">
+        <div className="max-w-8xl m-12 p-5">
             <h1 className="text-3xl font-bold text-center">All Medicine List</h1>
             <hr className='mt-5' />
             <div>
                 {/* Medicine Table */}
                 <MedicineTable
                     medicines={medicines}
+                    isLoading={isLoading}
                     onViewDetails={handleViewDetails}
                     onDelete={handleDelete}
                     onAddNew={() => console.log("Add new medicine clicked")}
@@ -103,6 +126,7 @@ const MedicineListPage: React.FC = () => {
                     <MedicineModal
                         medicine={selectedMedicine}
                         onClose={closeModal}
+                        doseFormData={doseFormData}
                     />
                 )}
             </div>

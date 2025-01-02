@@ -1,175 +1,210 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Medicine } from '../types/medicine';
-import { XMarkIcon } from '@heroicons/react/16/solid';
+// import { XMarkIcon } from '@heroicons/react/16/solid';
+import { Modal, Row, Col, Typography, Divider } from 'antd';
+import { Image } from 'antd';
+import { configData } from '../helpers/config';
+
+const { Text } = Typography;
 
 interface MedicineModalProps {
     medicine: Medicine | null;
     onClose: () => void;
+    doseFormData:any
 }
 
-const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose }) => {
+const MedicineModal: React.FC<MedicineModalProps> = ({ medicine, onClose,doseFormData }) => {
     if (!medicine) return null;
 
+    const getDoseFormName = (doseFormId:string) => {
+        const matchedItem = doseFormData.find((item:any) => item.id === doseFormId);
+        return matchedItem ? matchedItem.name : "Unknown";
+      };
+
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg w-full sm:w-96 md:w-3/4 lg:w-3/4 xl:w-2/3 max-h-screen overflow-y-auto relative">
-                {/* Close Button */}
-                <button
-                    className="absolute top-4 right-4 text-gray-500 text-xl"
-                    onClick={onClose}
-                >
-                    <XMarkIcon className="h-5 w-5" text-gray-500 />
+        <Modal
+            title="Medicine Details"
+            visible={true}
+            onCancel={onClose}
+            footer={null}
+            width={700}
+            bodyStyle={{ padding: '20px' }}
+            className="rounded-lg"
+        >
+            <div className="space-y-6">
+                {/* Medicine Details Section */}
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Medicine Name :- </Text>
+                        <Text>{medicine.medicineName}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Brand Name :- </Text>
+                        <Text>{medicine.brandName}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Price :- </Text>
+                        <Text>{medicine.price}</Text>
+                    </Col>
+                </Row>
 
-                </button>
-                <h2 className="text-2xl font-bold mb-4 text-center">Medicine Details</h2>
-                <hr className='mt-5 mb-5 ' />
+                <Divider />
 
-                {/* Medicine Details in Horizontal Layout */}
-                <div className="space-y-4">
-                    {/* Row 1: Medicine Name, Brand Name, Price */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Medicine Name</span>
-                            <span>{medicine.medicineName}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Brand Name</span>
-                            <span>{medicine.brandName}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Price</span>
-                            <span>{medicine.price}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Medicine Name</span>
-                            <span>{medicine.GenericName}</span>
-                        </div>
-                    </div>
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Generic Name :- </Text>
+                        <Text>{medicine.productType}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Drug Category :- </Text>
+                        <Text>{medicine.drugCategory}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Dosage Form :- </Text>
+                        <Text>{getDoseFormName(medicine.doseFormId)}</Text>
+                    </Col>
+                </Row>
 
-                    {/* Row 2: Drug Category, Dosage Form, Strength */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Drug Category</span>
-                            <span>{medicine.drugCategory}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Dosage Form</span>
-                            <span>{medicine.dosageForm}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Strength</span>
-                            <span>{medicine.strength}</span>
-                        </div>
-                    </div>
+                <Divider />
 
-                    {/* Row 3: Manufacturer, Pack Size, Route of Administration */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Manufacturer</span>
-                            <span>{medicine.manufacturer}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Pack Size</span>
-                            <span>{medicine.packSize}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Route of Administration</span>
-                            <span>{medicine.routeOfAdministration}</span>
-                        </div>
-                    </div>
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Strength :- </Text>
+                        <Text>{medicine.strength}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Manufacturer :- </Text>
+                        <Text>{medicine.manufacturer}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Pack Size :- </Text>
+                        <Text>{medicine.packSize}</Text>
+                    </Col>
+                </Row>
 
-                    {/* Row 4: Indications, Side Effects, Contraindications */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Indications</span>
-                            <span>{medicine.indications}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Side Effects</span>
-                            <span>{medicine.sideEffects}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Contraindications</span>
-                            <span>{medicine.contraindications}</span>
-                        </div>
-                    </div>
+                <Divider />
 
-                    {/* Row 5: Storage Conditions, Shelf Life, Prescription Required */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Storage Conditions</span>
-                            <span>{medicine.storageConditions}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Shelf Life</span>
-                            <span>{medicine.shelfLife}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Prescription Required</span>
-                            <span>{medicine.prescriptionReq}</span>
-                        </div>
-                    </div>
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Route of Administration :- </Text>
+                        <Text>{medicine.routeOfAdministration}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Indications :- </Text>
+                        <Text>{medicine.indications}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Side Effects :- </Text>
+                        <Text>{medicine.sideEffects}</Text>
+                    </Col>
+                </Row>
 
-                    {/* Row 6: Approval Info, Barcode SKU, Batch Number */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Approval Info</span>
-                            <span>{medicine.approvalInfo}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Barcode SKU</span>
-                            <span>{medicine.barcodeSKU}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Batch Number</span>
-                            <span>{medicine.batchNumber}</span>
-                        </div>
-                    </div>
+                <Divider />
 
-                    {/* Row 7: Interactions, Regulatory Approval, Country of Origin */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Interactions</span>
-                            <span>{medicine.interactions}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Therapeutic Class</span>
-                            <span>{medicine.TherapeuticClass}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Country of Origin</span>
-                            <span>{medicine.countryOfOrigin}</span>
-                        </div>
-                    </div>
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Contraindications :- </Text>
+                        <Text>{medicine.contraindications}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Storage Conditions :- </Text>
+                        <Text>{medicine.storageConditions}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Shelf Life :- </Text>
+                        <Text>{medicine.shelfLife}</Text>
+                    </Col>
+                </Row>
 
-                    {/* Row 8: NDC, Distributor, Special Considerations */}
-                    <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">NDC</span>
-                            <span>{medicine.ndc}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Distributor</span>
-                            <span>{medicine.distributor}</span>
-                        </div>
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Special Considerations</span>
-                            <span>{medicine.specialConsiderations}</span>
-                        </div>
-                    </div>
+                <Divider />
 
-                    {/* Row 9: Expiry Date */}
-                    {/* <div className="flex justify-between">
-                        <div className="flex flex-col w-1/3">
-                            <span className="font-semibold">Expiry Date</span>
-                            <span>{medicine.expiryDate}</span>
-                        </div>
-                    </div> */}
-                </div>
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Prescription Required :- </Text>
+                        <Text>{medicine.prescriptionReq}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Approval Info :- </Text>
+                        <Text>{medicine.approvalInfo}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Barcode SKU :- </Text>
+                        <Text>{medicine.barcodeSKU}</Text>
+                    </Col>
+                </Row>
+
+                <Divider />
+
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Batch Number :- </Text>
+                        <Text>{medicine.batchNumber}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Interactions :- </Text>
+                        <Text>{medicine.interactions}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Therapeutic Class :- </Text>
+                        <Text>{medicine.TherapeuticClass}</Text>
+                    </Col>
+                </Row>
+
+                <Divider />
+
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Country of Origin :- </Text>
+                        <Text>{medicine.countryOfOrigin}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>NDC :- </Text>
+                        <Text>{medicine.ndc}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Distributor :- </Text>
+                        <Text>{medicine.distributor}</Text>
+                    </Col>
+                </Row>
+
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Text strong>Schedule Type :- </Text>
+                        <Text>{medicine.scheduleType}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>GST Percentage :- </Text>
+                        <Text>{medicine.gstPercentage}</Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text strong>Special Considerations :- </Text>
+                        <Text>{medicine.specialConsiderations}</Text>
+                    </Col>
+                </Row>
+
+                <Divider />
+
+                <Row gutter={24}>
+                    {medicine?.image?.length && (
+                        <Col span={24}>
+                            <Text strong>Image:</Text>
+                            <Row gutter={16}>
+                                {(medicine?.image as any).map((url: string, index: number) => (
+                                    <Col span={8} key={index}>
+                                        <Image
+                                            src={`${configData.s3baseURL}${url}`}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                            preview={true}
+                                        />
+                                    </Col>
+                                ))}
+                            </Row>
+                        </Col>
+                    )}
+                </Row>
             </div>
-        </div>
-
-
+        </Modal>
     );
 };
 
