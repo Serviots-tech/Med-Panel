@@ -260,13 +260,14 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                         <Col span={8}>
                             <SelectDropdown
                                 placeholder="Select Drug Category"
-                                options={[
-                                    { label: 'Antibiotic', value: 'Antibiotic' },
-                                    { label: 'Painkiller', value: 'Painkiller' },
-                                    { label: 'Vitamin', value: 'Vitamin' },
-                                    { label: 'Antifungal', value: 'Antifungal' },
-                                    { label: 'Antiviral', value: 'Antiviral' }
-                                ]}
+                                options = {[
+                                    { label: 'H', value: 'H' },
+                                    { label: 'H1', value: 'H1' },
+                                    { label: 'G', value: 'G' },
+                                    { label: 'NRX', value: 'NRX' },
+                                    { label: 'TB', value: 'TB' },
+                                    { label: 'NON_SCHEDULE', value: 'NON_SCHEDULE' }
+                                  ]}
                                 value={formData.drugCategory}
                                 onChange={(value: any) => {
                                     handleChangeValue(value, 'drugCategory', true);
@@ -451,7 +452,7 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                             <SelectDropdown
                                 placeholder="Select Prescription Required"
                                 options={[
-                                    { label: 'Select', value: 'Select' },
+                                    // { label: 'Select', value: 'Select' },
                                     { label: 'YES', value: 'YES' },
                                     { label: 'NO', value: 'NO' }
                                 ]}
@@ -470,7 +471,7 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                             <SelectDropdown
                                 placeholder="Select Approval Info"
                                 options={[
-                                    { label: 'Select', value: 'Select' },
+                                    // { label: 'Select', value: 'Select' },
                                     { label: 'FDA', value: 'FDA' },
                                     { label: 'EMA', value: 'EMA' }
                                 ]}
@@ -546,7 +547,7 @@ export const MedicineForm: React.FC<MedicineFormProps> = ({ formData, setFormDat
                             <SelectDropdown
                                 placeholder="Select Country"
                                 options={[
-                                    { label: 'Select', value: 'Select' },
+                                    // { label: 'Select', value: 'Select' },
                                     ...Object.keys(countries).map(countryCode => ({
                                         label: `${countryCode} - ${(countries as any)[countryCode].name}`,
                                         value: countryCode,
